@@ -44,7 +44,7 @@ const getIndividualTour = (req, res) => {
          tour
       }
    });
-}
+};
 
 
 const createTour = (req, res) => {
@@ -82,7 +82,7 @@ const updateTour = (req, res) => {
          tour: `<Updated Tour>`
       }
    });
-}
+};
 
 
 const deleteTour = (req, res) => {
@@ -101,24 +101,8 @@ const deleteTour = (req, res) => {
       status: 'success',
       data: null
    });
-}
+};
 
-
-
-//get all tours
-// app.get('/api/v1/tours', getAllTours);
-
-//get individual tour
-// app.get('/api/v1/tours/:id', getIndividualTour);
-
-//create new tours
-// app.post('/api/v1/tours', createTour);
-
-//update tour
-// app.patch('/api/v1/tours/:id', updateTour);
-
-//delete tour
-// app.delete('/api/v1/tours/:id', deleteTour);
 
 
 app
