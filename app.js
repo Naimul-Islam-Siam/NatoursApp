@@ -37,7 +37,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
    if (!tour) {
       return res.status(404).json({
          status: 'fail',
-         message: "ID doesn't exit"
+         message: `ID doesn't exit`
       });
    }
 
@@ -66,5 +66,45 @@ app.post('/api/v1/tours', (req, res) => {
             tour: newTour
          }
       });
+   });
+});
+
+
+
+//update tour
+app.patch('/api/v1/tours/:id', (req, res) => {
+   const id = req.params.id * 1;
+
+   if (id >= tours.length) {
+      return res.status(404).json({
+         status: 'fail',
+         message: `ID doesn't exist`
+      });
+   }
+
+   res.status(200).json({
+      status: 'success',
+      data: {
+         tour: `<Updated Tour>`
+      }
+   });
+});
+
+
+
+//delete tour
+app.delete('/api/v1/tours/:id', (req, res) => {
+   const id = req.params.id * 1;
+
+   if (id >= tours.length) {
+      return res.status(404).json({
+         status: 'fail',
+         message: `ID doesn't exist`
+      });
+   }
+
+   res.status(204).json({
+      status: 'success',
+      data: null
    });
 });
