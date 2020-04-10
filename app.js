@@ -24,7 +24,29 @@ app.get('/api/v1/tours', (req, res) => {
       data: {
          tours
       }
-   })
+   });
+});
+
+
+
+//get individual tour
+app.get('/api/v1/tours/:id', (req, res) => {
+   const id = req.params.id * 1; //converts string to number
+   const tour = tours.find(el => el.id === id);
+
+   if (!tour) {
+      return res.status(404).json({
+         status: 'fail',
+         message: "ID doesn't exit"
+      });
+   }
+
+   res.status(200).json({
+      status: 'success',
+      data: {
+         tour
+      }
+   });
 });
 
 
