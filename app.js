@@ -34,6 +34,7 @@ app.get('/api/v1/tours/:id', (req, res) => {
    const id = req.params.id * 1; //converts string to number
    const tour = tours.find(el => el.id === id);
 
+   //if id doesn't exist
    if (!tour) {
       return res.status(404).json({
          status: 'fail',
@@ -75,6 +76,7 @@ app.post('/api/v1/tours', (req, res) => {
 app.patch('/api/v1/tours/:id', (req, res) => {
    const id = req.params.id * 1;
 
+   //if id doesn't exist
    if (id >= tours.length) {
       return res.status(404).json({
          status: 'fail',
@@ -96,6 +98,7 @@ app.patch('/api/v1/tours/:id', (req, res) => {
 app.delete('/api/v1/tours/:id', (req, res) => {
    const id = req.params.id * 1;
 
+   //if id doesn't exit
    if (id >= tours.length) {
       return res.status(404).json({
          status: 'fail',
@@ -103,6 +106,7 @@ app.delete('/api/v1/tours/:id', (req, res) => {
       });
    }
 
+   //status code for delete is 204
    res.status(204).json({
       status: 'success',
       data: null
