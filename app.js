@@ -15,9 +15,7 @@ app.listen(port, () => {
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 
-
-//get all tours
-app.get('/api/v1/tours', (req, res) => {
+const getAllTours = (req, res) => {
    res.status(200).json({
       status: 'success',
       results: tours.length,
@@ -25,12 +23,10 @@ app.get('/api/v1/tours', (req, res) => {
          tours
       }
    });
-});
+};
 
 
-
-//get individual tour
-app.get('/api/v1/tours/:id', (req, res) => {
+const getIndividualTour = (req, res) => {
    const id = req.params.id * 1; //converts string to number
    const tour = tours.find(el => el.id === id);
 
@@ -48,12 +44,10 @@ app.get('/api/v1/tours/:id', (req, res) => {
          tour
       }
    });
-});
+}
 
 
-
-//create new tours
-app.post('/api/v1/tours', (req, res) => {
+const createTour = (req, res) => {
    const newId = tours[tours.length - 1].id + 1; //create new id
    const newTour = Object.assign({ id: newId }, req.body); //new tour object
 
@@ -68,12 +62,10 @@ app.post('/api/v1/tours', (req, res) => {
          }
       });
    });
-});
+};
 
 
-
-//update tour
-app.patch('/api/v1/tours/:id', (req, res) => {
+const updateTour = (req, res) => {
    const id = req.params.id * 1;
 
    //if id doesn't exist
@@ -90,12 +82,10 @@ app.patch('/api/v1/tours/:id', (req, res) => {
          tour: `<Updated Tour>`
       }
    });
-});
+}
 
 
-
-//delete tour
-app.delete('/api/v1/tours/:id', (req, res) => {
+const deleteTour = (req, res) => {
    const id = req.params.id * 1;
 
    //if id doesn't exit
@@ -111,4 +101,34 @@ app.delete('/api/v1/tours/:id', (req, res) => {
       status: 'success',
       data: null
    });
-});
+}
+
+
+
+//get all tours
+// app.get('/api/v1/tours', getAllTours);
+
+//get individual tour
+// app.get('/api/v1/tours/:id', getIndividualTour);
+
+//create new tours
+// app.post('/api/v1/tours', createTour);
+
+//update tour
+// app.patch('/api/v1/tours/:id', updateTour);
+
+//delete tour
+// app.delete('/api/v1/tours/:id', deleteTour);
+
+
+app
+   .route('/api/v1/tours')
+   .get(getAllTours)
+   .post(createTour);
+
+
+app
+   .route('/api/v1/tours/:id')
+   .get(getIndividualTour)
+   .patch(updateTour)
+   .delete(deleteTour);
