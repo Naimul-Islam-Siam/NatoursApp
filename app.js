@@ -1,23 +1,54 @@
 const fs = require('fs');
 const express = require('express');
+const morgan = require('morgan');
 const app = express();
 const port = 8080;
 
-app.use(express.json()); // otherwise post request won't work
 
-// server initialization
+//============================
+// (1) Server initialization
+//============================
+
 app.listen(port, () => {
    console.log(`Listening to port ${port}`);
 });
 
 
+
+//============================
+// (2) Middlewares
+//============================
+
+app.use(express.json()); // otherwise post request won't work
+
+// custom middleware
+app.use((req, res, next) => {
+   req.requestTime = new Date().toISOString();
+   next(); // this is a must, otherwise won't work
+});
+
+// third party middleware
+app.use(morgan('dev'));
+
+
+
+//============================
+// (3) Read file-database
+//============================
+
 // 'tours-simple.json' is working as a database
 const tours = JSON.parse(fs.readFileSync(`${__dirname}/dev-data/data/tours-simple.json`));
 
 
+
+//============================
+// (4) Route handler functions
+//============================
+
 const getAllTours = (req, res) => {
    res.status(200).json({
       status: 'success',
+      requestedAt: req.requestTime,
       results: tours.length,
       data: {
          tours
@@ -104,7 +135,53 @@ const deleteTour = (req, res) => {
 };
 
 
+const getAllUsers = (req, res) => {
+   res.status(500).json({
+      // 500 = internal server error
+      status: 'error',
+      message: `This route isn't created yet`
+   });
+};
 
+
+const getIndividualUser = (req, res) => {
+   res.status(500).json({
+      status: 'error',
+      message: `This route isn't created yet`
+   });
+};
+
+
+const createUser = (req, res) => {
+   res.status(500).json({
+      status: 'error',
+      message: `This route isn't created yet`
+   });
+};
+
+
+const updateUser = (req, res) => {
+   res.status(500).json({
+      status: 'error',
+      message: `This route isn't created yet`
+   });
+};
+
+
+const deleteUser = (req, res) => {
+   res.status(500).json({
+      status: 'error',
+      message: `This route isn't created yet`
+   });
+};
+
+
+
+//============================
+// (5) Routes
+//============================
+
+// tours
 app
    .route('/api/v1/tours')
    .get(getAllTours)
@@ -116,3 +193,17 @@ app
    .get(getIndividualTour)
    .patch(updateTour)
    .delete(deleteTour);
+
+
+// users
+app
+   .route('/api/v1/users')
+   .get(getAllUsers)
+   .post(createUser);
+
+
+app
+   .route('/api/v1/users/:id')
+   .get(getIndividualUser)
+   .patch(updateUser)
+   .delete(deleteUser);
