@@ -14,6 +14,8 @@ const userRouter = require('./routes/userRoutes');
 
 app.use(express.json()); // otherwise post request won't work
 
+app.use(express.static(`${__dirname}/public`)); // serve static files; public folder is for static files
+
 // custom middleware
 app.use((req, res, next) => {
    req.requestTime = new Date().toISOString();
@@ -22,8 +24,6 @@ app.use((req, res, next) => {
 
 // third party middleware
 app.use(morgan('dev'));
-
-
 
 //============================
 // Routes

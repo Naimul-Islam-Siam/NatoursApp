@@ -9,7 +9,7 @@ const tours = JSON.parse(fs.readFileSync(`${__dirname}/../dev-data/data/tours-si
 
 
 // param middleware
-// chehck if id in url exists, will affect the whole tourRouter
+// check if id in url exists, will affect the whole tourRouter
 exports.checkID = (req, res, next, value) => {
    console.log(`The id is: ${value}`);
    const id = req.params.id * 1;
