@@ -18,15 +18,15 @@ const Tour = require('../models/tourModel');
 
 // check if name and price are present while creating new tour
 // will affect tourRouter POST request
-exports.checkBody = (req, res, next) => {
-   if (!req.body.name || !req.body.price) {
-      return res.status(400).json({
-         status: "fail",
-         message: "Missing name or price"
-      });
-   }
-   next();
-}
+// exports.checkBody = (req, res, next) => {
+//    if (!req.body.name || !req.body.price) {
+//       return res.status(400).json({
+//          status: "fail",
+//          message: "Missing name or price"
+//       });
+//    }
+//    next();
+// }
 
 
 //============================
@@ -58,13 +58,25 @@ exports.getIndividualTour = (req, res) => {
 };
 
 
-exports.createTour = (req, res) => {
-   // res.status(201).json({
-   //    status: 'success',
-   //    data: {
-   //       tour: newTour
-   //    }
-   // });
+exports.createTour = async (req, res) => {
+   try {
+      // const newTour = new Tour(req.body)
+      // newTour.save(); //save to database
+
+      const newTour = await Tour.create(req.body); // same as upper referene
+
+      res.status(201).json({
+         status: 'success',
+         data: {
+            tour: newTour
+         }
+      });
+   } catch (error) {
+      res.status(400).json({
+         status: "fail",
+         message: error
+      })
+   }
 };
 
 
