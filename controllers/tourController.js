@@ -33,28 +33,43 @@ const Tour = require('../models/tourModel');
 // Route handler functions
 //============================
 
-exports.getAllTours = (req, res) => {
-   res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      // results: tours.length,
-      // data: {
-      //    tours
-      // }
-   });
+exports.getAllTours = async (req, res) => {
+   try {
+      const tours = await Tour.find(); // if nothing is passed in find method, it returns all the results
+
+      res.status(200).json({
+         status: 'success',
+         requestedAt: req.requestTime,
+         results: tours.length,
+         data: {
+            tours
+         }
+      });
+   } catch (error) {
+      res.status(404).json({
+         status: "fail",
+         message: error
+      })
+   }
 };
 
 
-exports.getIndividualTour = (req, res) => {
-   const id = req.params.id * 1; // converts string to number
-   // const tour = tours.find(el => el.id === id);
+exports.getIndividualTour = async (req, res) => {
+   try {
+      const tour = await Tour.findById(req.params.id); // Tour.findById = Tour.findOne({ _id: req.params.id})
 
-   // res.status(200).json({
-   //    status: 'success',
-   //    data: {
-   //       tour
-   //    }
-   // });
+      res.status(200).json({
+         status: 'success',
+         data: {
+            tour
+         }
+      });
+   } catch (error) {
+      res.status(404).json({
+         status: "fail",
+         message: error
+      });
+   }
 };
 
 
