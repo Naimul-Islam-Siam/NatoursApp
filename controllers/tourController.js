@@ -35,7 +35,15 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
    try {
-      const tours = await Tour.find(); // if nothing is passed in find method, it returns all the results
+      const queryObj = { ...req.query }; // hard copy of req.query object instead of reference
+      const excludedFields = ['page', 'sort', 'limit', 'fields']; // this query fields will be ignored
+      excludedFields.forEach(el => delete queryObj[el]);
+
+      // didn't await here for further chaining like sorting, limiting
+      const query = Tour.find(queryObj); // if nothing is passed in find method, it returns all the results
+
+      // execute the query
+      const tours = await query;
 
       res.status(200).json({
          status: 'success',
@@ -49,7 +57,7 @@ exports.getAllTours = async (req, res) => {
       res.status(404).json({
          status: "fail",
          message: error
-      })
+      });
    }
 };
 
