@@ -53,8 +53,8 @@ typings/
 
 # dotenv environment variable files
 .env*
-#*.env
-#*.env*
+*.env
+*.env*
 
 # Mac files
 .DS_Store
