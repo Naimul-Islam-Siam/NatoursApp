@@ -35,13 +35,13 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
    try {
-      // --------- 1) Basic Filtering ---------
+      // --------- 1A) Basic Filtering ---------
       const queryObj = { ...req.query }; // hard copy of req.query object instead of reference
       const excludedFields = ['page', 'sort', 'limit', 'fields']; // this query fields will be ignored
       excludedFields.forEach(el => delete queryObj[el]);
 
 
-      // --------- 2) Advanced Filtering ---------
+      // --------- 1B) Advanced Filtering ---------
       // for greater than, less than queries
 
       // { duration: { 'gte': '5' }, difficulty: 'easy' } the one we get
@@ -55,8 +55,19 @@ exports.getAllTours = async (req, res) => {
       const queryJson = JSON.parse(queryStr);
 
       // didn't await here for further chaining like sorting, limiting
-      const query = Tour.find(queryJson); // if nothing is passed in find method, it returns all the results
+      let query = Tour.find(queryJson); // if nothing is passed in find method, it returns all the results
 
+
+      // --------- 2) Sorting ---------
+      if (req.query.sort) {
+         // mongodb works like this -> sort(price rating) for multiple sorting criterias
+         // but we get response like this -> sort=price,rating
+         // so we need to split
+         const sortBy = req.query.sort.split(',').join(' ');
+         query = query.sort(sortBy);
+      } else {
+         query = query.sort('-createdAt'); // by default sort by time created at. '-' sign for desc order
+      }
 
 
       // --------- 3) execute the query ---------
