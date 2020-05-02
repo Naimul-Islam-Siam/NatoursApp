@@ -35,14 +35,31 @@ const Tour = require('../models/tourModel');
 
 exports.getAllTours = async (req, res) => {
    try {
+      // --------- 1) Basic Filtering ---------
       const queryObj = { ...req.query }; // hard copy of req.query object instead of reference
       const excludedFields = ['page', 'sort', 'limit', 'fields']; // this query fields will be ignored
       excludedFields.forEach(el => delete queryObj[el]);
 
-      // didn't await here for further chaining like sorting, limiting
-      const query = Tour.find(queryObj); // if nothing is passed in find method, it returns all the results
 
-      // execute the query
+      // --------- 2) Advanced Filtering ---------
+      // for greater than, less than queries
+
+      // { duration: { 'gte': '5' }, difficulty: 'easy' } the one we get
+      // { duration: { '$gte': '5' }, difficulty: 'easy' } the one we need for mongodb
+
+      let queryStr = JSON.stringify(queryObj); // convert json to string
+
+      // turn gte into $gte
+      queryStr = queryStr.replace(/\b(gte|gt|lte|lt)\b/g, match => `$${match}`); // \b for exact match, g for multiple
+
+      const queryJson = JSON.parse(queryStr);
+
+      // didn't await here for further chaining like sorting, limiting
+      const query = Tour.find(queryJson); // if nothing is passed in find method, it returns all the results
+
+
+
+      // --------- 3) execute the query ---------
       const tours = await query;
 
       res.status(200).json({
