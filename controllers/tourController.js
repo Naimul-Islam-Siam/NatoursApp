@@ -58,6 +58,7 @@ exports.getAllTours = async (req, res) => {
       let query = Tour.find(queryJson); // if nothing is passed in find method, it returns all the results
 
 
+
       // --------- 2) Sorting ---------
       if (req.query.sort) {
          // mongodb works like this -> sort(price rating) for multiple sorting criterias
@@ -70,7 +71,37 @@ exports.getAllTours = async (req, res) => {
       }
 
 
-      // --------- 3) execute the query ---------
+
+      // --------- 3) Limiting Fields (Projection) ---------
+      // only show selected data
+      if (req.query.fields) {
+         // mongodb works like this -> select(price rating) for multiple sorting criterias
+         // but we get response like this -> fields=price,rating
+         // so we need to split
+         const fields = req.query.fields.split(',').join(' ');
+         query = query.select(fields);
+      } else {
+         query = query.select('-__v'); // '-' sign excludes __v
+      }
+
+
+
+      // --------- 4) Pagination ---------
+      const page = req.query.page * 1 || 1; // convert string to number, by default current page is 1st page
+      const limit = req.query.limit * 1 || 100; // by default 100
+      const skip = (page - 1) * limit;
+
+      query = query.skip(skip).limit(limit);
+
+      // if requested page number is more than available page numbers
+      if (req.query.page) {
+         const numberOfTours = await Tour.countDocuments();
+         if (skip >= numberOfTours) throw new Error(`This page doesn't exist`);
+      }
+
+
+
+      // --------- execute the query ---------
       const tours = await query;
 
       res.status(200).json({
