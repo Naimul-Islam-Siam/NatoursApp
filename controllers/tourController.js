@@ -132,12 +132,17 @@ exports.getTourStats = async (req, res) => {
          },
          {
             $group: {
-               _id: null,
+               _id: { $toUpper: '$difficulty' }, // will group by difficulty
+               numTours: { $sum: 1 }, // 1 will be added each time a document goes through this pipeline
+               numRatings: { $sum: '$ratingsQuantity' },
                avgRating: { $avg: '$ratingsAverage' },
                avgPrice: { $avg: '$price' },
                minPrice: { $min: '$price' },
                maxPrice: { $max: '$price' }
             }
+         },
+         {
+            $sort: { avgPrice: 1 } // the old document names no longer exists in the pipleline. The new names must be use
          }
       ]);
 
