@@ -9,7 +9,7 @@ const tourSchema = new mongoose.Schema({
       trim: true
    },
    duration: {
-      type: Number,
+      type: Number, // in days
       required: [true, 'A tour must have duration']
    },
    maxGroupSize: {
@@ -54,11 +54,23 @@ const tourSchema = new mongoose.Schema({
    // when is the post created
    createdAt: {
       type: Date,
-      default: Date.now()
+      default: Date.now(),
+      select: false
    },
    // when will the tour start
    startDates: [Date]
-});
+}, {
+   toJSON: { virtuals: true },
+   toObject: { virtuals: true }
+}); // otherwise virtual properties will be ignored
+
+
+// virtual properties: we don't need to store durationWeeks in database as duration is already stored
+// virtual property will make the duration converted to weeks after retrieving from the database
+tourSchema.virtual('durationWeeks').get(function () {
+   return this.duration / 7;
+}); // must use normal function instead of arrow func. as 'this' will be pointing to schema
+
 
 // model
 const Tour = mongoose.model('Tour', tourSchema); // model name starts with capital letter
