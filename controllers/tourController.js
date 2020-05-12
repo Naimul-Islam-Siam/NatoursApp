@@ -124,6 +124,10 @@ exports.deleteTour = async (req, res) => {
 };
 
 
+//============================
+// Aggregation Pipeline
+//============================
+
 exports.getTourStats = async (req, res) => {
    try {
       const stats = await Tour.aggregate([
@@ -133,8 +137,8 @@ exports.getTourStats = async (req, res) => {
          {
             $group: {
                _id: { $toUpper: '$difficulty' }, // will group by difficulty
-               numTours: { $sum: 1 }, // 1 will be added each time a document goes through this pipeline
-               numRatings: { $sum: '$ratingsQuantity' },
+               numTours: { $sum: 1 }, // total number of tours, 1 will be added each time a document goes through this pipeline
+               numRatings: { $sum: '$ratingsQuantity' }, // number of ratings casted
                avgRating: { $avg: '$ratingsAverage' },
                avgPrice: { $avg: '$price' },
                minPrice: { $min: '$price' },
@@ -150,6 +154,56 @@ exports.getTourStats = async (req, res) => {
          status: 'success',
          data: {
             tour: stats
+         }
+      });
+
+   } catch (error) {
+      res.status(400).json({
+         status: "fail",
+         message: error
+      });
+   }
+};
+
+
+exports.getMonthlyPlan = async (req, res) => {
+   try {
+      const year = req.params.year * 1;
+
+      const plan = Tour.aggregate([
+         {
+            $unwind: '$startDates' // separates arrays
+         },
+         {
+            $match: {
+               startDates: {
+                  $gte: new Date(`${year}-01-01`),
+                  $lte: new Date(`${year}-12-31`)
+               }
+            }
+         },
+         {
+            $group: {
+               _id: { $month: '$startDates' }, // group by month
+               numTourStarts: { $sum: 1 }, // number of tour that starts on that month
+               tours: { $push: '$name' } // name of the tours of that month will be pushed in an array
+            }
+         },
+         {
+            $addFields: { month: '$_id' }, // will add a new field named month
+         },
+         {
+            $project: { _id: 0 } // _id won't be showed because of setting it to 0
+         },
+         {
+            $sort: { numTourStarts: -1 } // sort in descending order by the number of tours in a month
+         }
+      ]);
+
+      res.status(200).json({
+         status: 'success',
+         data: {
+            plan
          }
       });
 
