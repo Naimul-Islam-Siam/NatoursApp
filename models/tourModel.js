@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const slugify = require('slugify');
 
 // schema
 const tourSchema = new mongoose.Schema({
@@ -7,6 +8,9 @@ const tourSchema = new mongoose.Schema({
       required: [true, 'A tour must have a name'], // validator
       unique: [true, 'Tour name already exist'],
       trim: true
+   },
+   slug: {
+      type: String
    },
    duration: {
       type: Number, // in days
@@ -70,6 +74,15 @@ const tourSchema = new mongoose.Schema({
 tourSchema.virtual('durationWeeks').get(function () {
    return this.duration / 7;
 }); // must use normal function instead of arrow func. as 'this' will be pointing to schema
+
+
+// document middleware, manipulate the documents that are currently being saved
+// runs before .save() and .create()
+// doesn't run for update, insertMany
+tourSchema.pre('save', function (next) {
+   this.slug = slugify(this.name, { lower: true });
+   next();
+});
 
 
 // model
