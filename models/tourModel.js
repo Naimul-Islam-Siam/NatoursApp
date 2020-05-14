@@ -62,7 +62,11 @@ const tourSchema = new mongoose.Schema({
       select: false
    },
    // when will the tour start
-   startDates: [Date]
+   startDates: [Date],
+   secretTour: {
+      type: Boolean,
+      default: false
+   }
 }, {
    toJSON: { virtuals: true },
    toObject: { virtuals: true }
@@ -81,6 +85,25 @@ tourSchema.virtual('durationWeeks').get(function () {
 // doesn't run for update, insertMany
 tourSchema.pre('save', function (next) {
    this.slug = slugify(this.name, { lower: true });
+   next();
+});
+
+
+// Query middleware
+tourSchema.pre(/^find/, function (next) {
+   // any string starting with find will trigger this middleware function
+   // without regular expression we would've to mention one for find, one for findOne and so on...
+   // we need it cause normally this function affects getAllTours but doesn't affect getIndividulTour 
+   this.find({ secretTour: { $ne: true } });
+
+   this.start = Date.now();
+
+   next();
+});
+
+
+tourSchema.post(/^find/, function (docs, next) {
+   console.log(`Query took ${Date.now() - this.start} milliseconds`);
    next();
 });
 
