@@ -88,7 +88,10 @@ exports.createTour = async (req, res) => {
 
 exports.updateTour = async (req, res) => {
    try {
-      const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true });
+      const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+         new: true,
+         runValidators: true // otherwise will not accept validators defined in tourSchema
+      });
       // runValidators enforce model schema, so price can't be anything other than number, otherwise it'll cause an error
 
       res.status(200).json({
