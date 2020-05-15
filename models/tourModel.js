@@ -108,6 +108,16 @@ tourSchema.post(/^find/, function (docs, next) {
 });
 
 
+// Aggregation Middleware
+// for aggregation pipeline
+tourSchema.pre('aggregate', function (next) {
+   this.pipeline().unshif({
+      $match: { secretTour: { $ne: true } }
+   });
+   next();
+});
+
+
 // model
 const Tour = mongoose.model('Tour', tourSchema); // model name starts with capital letter
 
