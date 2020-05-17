@@ -12,6 +12,8 @@ const userRouter = require('./routes/userRoutes');
 
 // --- middlewares used for all routes ---
 
+// middlewares are added in the middleware stack in order
+
 app.use(express.json()); // otherwise post request won't work
 
 app.use(express.static(`${__dirname}/public`)); // serve static files; public folder is for static files
@@ -36,6 +38,17 @@ app.use('/api/v1/tours', tourRouter); // route mounting; middleware used for onl
 // users
 app.use('/api/v1/users', userRouter); // route mounting; middleware used for only userRouter
 
+
+// unhandled routes - faulty req strcuture/mis-spelled
+// this middleware will be triggered only if the middlewares mentioned above aren't triggered
+app.all('*', (req, res, next) => {
+   res.status(404).json({
+      status: 'fail',
+      message: `Can't find ${req.originalUrl} on this server`
+   });
+   next();
+}); // all stands for all the http methods (get, post, patch, delete)
+// as their is no specific url, * will handle all the urls that are not handled
 
 
 module.exports = app;
