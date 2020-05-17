@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const app = express();
 
+const AppError = require('./utils/appError');
+const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 
@@ -42,13 +44,22 @@ app.use('/api/v1/users', userRouter); // route mounting; middleware used for onl
 // unhandled routes - faulty req strcuture/mis-spelled
 // this middleware will be triggered only if the middlewares mentioned above aren't triggered
 app.all('*', (req, res, next) => {
-   res.status(404).json({
-      status: 'fail',
-      message: `Can't find ${req.originalUrl} on this server`
-   });
-   next();
+   // res.status(404).json({
+   //    status: 'fail',
+   //    message: `Can't find ${req.originalUrl} on this server`
+   // });
+   // next();
+
+   // same as above
+   const err = new AppError(`Can't find ${req.originalUrl} on this server`, 404);
+
+   next(err); // using global error handling 
 }); // all stands for all the http methods (get, post, patch, delete)
 // as their is no specific url, * will handle all the urls that are not handled
+
+
+// GLOBAL Error Handling Middleware
+app.use(globalErrorHandler);
 
 
 module.exports = app;
