@@ -1,6 +1,7 @@
 const Tour = require('./../models/tourModel');
 const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
+const AppError = require('./../utils/appError');
 
 // custom middleware
 // will auto prefill the followings to form a query and then call the next 
@@ -41,6 +42,12 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 exports.getIndividualTour = catchAsync(async (req, res, next) => {
    const tour = await Tour.findById(req.params.id); // Tour.findById = Tour.findOne({ _id: req.params.id})
 
+   // 404
+   if (!tour) {
+      const error = new AppError(`Couldn't find any tour with that ID`, 404);
+      return next(error);
+   }
+
    res.status(200).json({
       status: 'success',
       data: {
@@ -72,6 +79,12 @@ exports.updateTour = catchAsync(async (req, res, next) => {
    });
    // runValidators enforce model schema, so price can't be anything other than number, otherwise it'll cause an error
 
+   // 404
+   if (!tour) {
+      const error = new AppError(`Couldn't find any tour with that ID`, 404);
+      return next(error);
+   }
+
    res.status(200).json({
       status: 'success',
       data: {
@@ -82,7 +95,13 @@ exports.updateTour = catchAsync(async (req, res, next) => {
 
 
 exports.deleteTour = catchAsync(async (req, res, next) => {
-   await Tour.findByIdAndDelete(req.params.id, req.body);
+   const tour = await Tour.findByIdAndDelete(req.params.id, req.body);
+
+   // 404
+   if (!tour) {
+      const error = new AppError(`Couldn't find any tour with that ID`, 404);
+      return next(error);
+   }
 
    // status code for delete is 204
    res.status(204).json({
