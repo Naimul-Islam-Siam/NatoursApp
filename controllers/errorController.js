@@ -1,3 +1,11 @@
+const AppError = require('./../utils/appError');
+
+const handleErrorDB = (error) => {
+   const message = `Invalid ${error.path}: ${error.value}`;
+   return new AppError(message, 400); // 400 = bad request
+};
+
+
 const sendErrorDev = (err, res) => {
    res.status(err.statusCode).json({
       status: err.status,
@@ -35,7 +43,13 @@ module.exports = (err, req, res, next) => {
    if (process.env.NODE_ENV === 'development') {
       sendErrorDev(err, res);
    } else if (process.env.NODE_ENV === 'production') {
-      sendErrorProd(err, res);
+      let error = { ...err }; // hard copy of err it's not good practice to directly manipulate the argument
+
+      if (error.name === 'CastError') {
+         error = handleErrorDB(error);
+      }
+
+      sendErrorProd(error, res);
    }
 
    next();
