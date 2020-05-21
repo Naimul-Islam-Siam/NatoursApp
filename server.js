@@ -1,8 +1,17 @@
 const dotenv = require('dotenv');
 dotenv.config({ path: './config.env' }); // configure dotenv file
+
+// uncaught exceptions.
+process.on('uncaughtException', err => {
+   console.log('Uncaught Exception 💥💥💥. Shutting down...');
+   console.log(err.name, err.message);
+
+   process.exit(1); // 1 stands for uncalled exception; will shut the app down
+});
+
+
 const app = require('./app'); // must be after dotenv config
 const mongoose = require('mongoose');
-
 
 const DB = process.env.DATABASE.replace(
    '<password>',
@@ -32,8 +41,8 @@ const server = app.listen(port, () => {
 // errors that happen outside express. For example database in inaccessible or crashed
 // handle unhandled promise rejection
 process.on('unhandledRejection', err => {
-   console.log(err.name, err.message);
    console.log('Unhandled Rejection 💥💥💥. Shutting down...');
+   console.log(err.name, err.message);
 
    // server.close gives the server time to finish all requests that are pending or being handled
    // otherwise porcess.exit would trigger immediately and shut the app instantly which is not good
