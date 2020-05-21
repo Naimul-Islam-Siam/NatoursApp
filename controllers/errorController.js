@@ -14,6 +14,14 @@ const handleDuplicateFieldDB = (error) => {
 };
 
 
+const handleValidationErrorDB = (error) => {
+   const err = Object.values(error.errors).map(el => el.message);
+   const message = `Invalid input: ${err.join('. ')}`;
+
+   return new AppError(message, 400);
+};
+
+
 const sendErrorDev = (err, res) => {
    res.status(err.statusCode).json({
       status: err.status,
@@ -61,6 +69,11 @@ module.exports = (err, req, res, next) => {
       // for duplicate fields. For example a tour name that already exists is used again in future for another tour
       if (error.code === 11000) {
          error = handleDuplicateFieldDB(error);
+      }
+
+      // validation errors
+      if (error.name === 'ValidationError') {
+         error = handleValidationErrorDB(error);
       }
 
       sendErrorProd(error, res);
