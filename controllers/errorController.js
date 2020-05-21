@@ -7,7 +7,7 @@ const handleErrorDB = (error) => {
 
 
 const handleDuplicateFieldDB = (error) => {
-   const value = error.errmsg.match(/(["'])(\\?.)*?\1/)[0];
+   const value = error.errmsg.match(/(["'])(\\?.)*?\1/)[0]; // extract string in between quotes " "
    const message = `Field value: ${value} already exists. Please try another.`;
 
    return new AppError(message, 400);
