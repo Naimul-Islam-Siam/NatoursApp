@@ -1,5 +1,7 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const bcrypt = require('bcryptjs');
+
 
 const userSchema = new mongoose.Schema({
    name: {
@@ -23,8 +25,31 @@ const userSchema = new mongoose.Schema({
    },
    passwordConfirm: {
       type: String,
-      required: [true, 'Type your password again for cofirming']
+      required: [true, 'Type your password again for cofirming'],
+      validate: {
+         // works only for create() and save()
+         validator: function (el) {
+            return el === this.password;
+         },
+         message: `Passwords are not the same`
+      }
    }
+});
+
+
+userSchema.pre('save', async function (next) {
+   // only encrypt if the password is newly created or updated
+   // don't encrypt it else, for example if email or username is updated
+   if (!this.isModified('password')) return next();
+
+   // encrypt
+   // the number denotes how CPU intensive the program will be. The more the number the stronger the encryption will be but that will take lot more time
+   this.password = await bcrypt.hash(this.password, 12);
+
+   // after the validation passwordConfirm is not required in the database
+   this.passwordConfirm = undefined;
+
+   next();
 });
 
 
