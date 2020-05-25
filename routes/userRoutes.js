@@ -2,13 +2,16 @@ const express = require('express');
 const userController = require('./../controllers/userController'); // route handlers
 const authController = require('./../controllers/authController');
 const { getAllUsers, getIndividualUser, createUser, updateUser, deleteUser } = userController;
-const { signup } = authController;
+const { signup, login } = authController;
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
 
 
 router
    .post('/signup', signup);
+
+router
+   .post('/login', login);
 
 
 router
