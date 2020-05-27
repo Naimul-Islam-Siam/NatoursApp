@@ -72,6 +72,7 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 
+// protect route middleware
 exports.protect = catchAsync(async (req, res, next) => {
    let token;
 
@@ -105,3 +106,18 @@ exports.protect = catchAsync(async (req, res, next) => {
    req.user = currentUser;
    next();
 });
+
+
+// authorization and role permissions
+exports.restrictTo = (...roles) => {
+   return (req, res, next) => {
+      // authorized roles are 'admin' and 'lead-guide'
+      if (!roles.includes(req.user.role)) {
+         // req.body.role will have role of the person stored
+         // roles = admin, lead-guide. So if req.user.role is not any of the roles, send error
+         return next(new AppError(`You don't have permission to perform this action.`, 403)); // 403 = forbidden
+      }
+
+      next();
+   };
+};
