@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const validator = require('validator');
+const crypto = require('crypto');
 const bcrypt = require('bcryptjs');
 
 
@@ -40,7 +41,9 @@ const userSchema = new mongoose.Schema({
          message: `Passwords are not the same`
       }
    },
-   passwordChangedAt: Date
+   passwordChangedAt: Date,
+   passwordResetToken: String,
+   passwordResetExpires: Date
 });
 
 
@@ -77,6 +80,18 @@ userSchema.methods.changedPasswordAfter = function (JWTTimeStamp) {
 
    // by default password is not changed
    return false;
+};
+
+
+// forgot password token
+userSchema.methods.createPasswordResetToken = function () {
+   const resetToken = crypto.randomBytes(32).toString('hex');
+
+   this.passwordResetToken = crypto.createHash('sha256').update(resetToken).digest('hex'); // store the token in encrypted form in DB
+
+   this.passwordResetExpires = Date.now() + 5 * 60 * 1000; // expires in 5 min
+
+   return resetToken; // send plain text token to the user via email, not the encrypted one for security. Otherwise there's no need to encrypt at all.
 };
 
 
