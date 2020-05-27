@@ -2,7 +2,7 @@ const express = require('express');
 const tourController = require('./../controllers/tourController'); // route handlers
 const authController = require('./../controllers/authController');
 const { getAllTours, getIndividualTour, createTour, updateTour, deleteTour, aliasTopTours, getTourStats, getMonthlyPlan } = tourController;
-const { protect } = authController;
+const { protect, restrictTo } = authController;
 
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
@@ -35,7 +35,7 @@ router
    .route('/:id')
    .get(getIndividualTour)
    .patch(updateTour)
-   .delete(deleteTour);
+   .delete(protect, restrictTo('admin', 'lead-guide'), deleteTour);
 
 
 
