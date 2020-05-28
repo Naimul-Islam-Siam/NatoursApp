@@ -95,6 +95,20 @@ userSchema.methods.createPasswordResetToken = function () {
 };
 
 
+// update passwordChangedAt
+userSchema.pre('save', function (next) {
+   // if password is not modified or the document is new, don't do anything just move to next middleware
+   if (!this.isModified('password') || this.isNew) {
+      return next();
+   }
+
+   // minus 1s because sometimes the JWT token is received earlier than setting the passwordChangedAt, in that case it will cause problem
+   this.passwordChangedAt = Date.now() - 1000;
+
+   next();
+});
+
+
 const User = mongoose.model('User', userSchema);
 
 module.exports = User;
