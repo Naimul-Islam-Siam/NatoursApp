@@ -57,11 +57,11 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
 
-   // equivalent is passed as argument; const isCorrectPass = await user.correctPassword(password, user.password) // input pass, encrypted pass from database
+   // equivalent is passed as argument; const isCorrectPass = await user.isCorrectPassword(password, user.password) // input pass, encrypted pass from database
    // if user doesn't exist at the first place, await part won't run at all
    // but if we passed arguent as isCorrectPass instead of not storing in variable, it would be dependent on user. but what if user doesn't exist! that's why directly pass as argument instead of stroing in var and pass as arg
-   // correctPassword method is obtained as document instant through userModel
-   if (!user || !await user.correctPassword(password, user.password)) {
+   // isCorrectPassword method is obtained as document instant through userModel
+   if (!user || !await user.isCorrectPassword(password, user.password)) {
       return next(new AppError('Incorrect email or password', 401));
    }
 
@@ -219,7 +219,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
    const user = await User.findById(req.user.id).select('+password');
 
    // 2) ask for the current password and check if it's correct
-   if (!(await user.correctPassword(req.body.passwordCurrent, user.password))) {
+   if (!(await user.isCorrectPassword(req.body.passwordCurrent, user.password))) {
       return next(new AppError(`Wrong current password.`, 401));
    }
 

@@ -64,7 +64,7 @@ userSchema.pre('save', async function (next) {
 
 
 // verify while logging in if inputed password is same as the password stored in DB
-userSchema.methods.correctPassword = async function (inputPass, encryptedPass) {
+userSchema.methods.isCorrectPassword = async function (inputPass, encryptedPass) {
    return await bcrypt.compare(inputPass, encryptedPass);
 };
 
