@@ -2,7 +2,7 @@ const express = require('express');
 const userController = require('./../controllers/userController'); // route handlers
 const authController = require('./../controllers/authController');
 const { getAllUsers, getIndividualUser, createUser, updateUser, deleteUser } = userController;
-const { signup, login, forgotPassword, resetPassword } = authController;
+const { signup, login, protect, forgotPassword, resetPassword, updatePassword } = authController;
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
 
@@ -18,6 +18,9 @@ router
 
 router
    .patch('/resetPassword/:token', resetPassword);
+
+router
+   .patch('/updatePassword', protect, updatePassword);
 
 
 router
