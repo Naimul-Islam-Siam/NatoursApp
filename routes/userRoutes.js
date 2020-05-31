@@ -1,7 +1,7 @@
 const express = require('express');
 const userController = require('./../controllers/userController'); // route handlers
 const authController = require('./../controllers/authController');
-const { getAllUsers, getIndividualUser, createUser, updateUser, deleteUser, updateMe } = userController;
+const { getAllUsers, getIndividualUser, createUser, updateUser, deleteUser, updateMe, deactivateMe } = userController;
 const { signup, login, protect, forgotPassword, resetPassword, updatePassword } = authController;
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
@@ -24,6 +24,9 @@ router
 
 router
    .patch('/updateMe', protect, updateMe);
+
+router
+   .delete('/deactivateMe', protect, deactivateMe);
 
 
 
