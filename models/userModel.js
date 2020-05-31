@@ -43,7 +43,12 @@ const userSchema = new mongoose.Schema({
    },
    passwordChangedAt: Date,
    passwordResetToken: String,
-   passwordResetExpires: Date
+   passwordResetExpires: Date,
+   active: {
+      type: Boolean,
+      default: true,
+      select: false
+   }
 });
 
 
@@ -104,6 +109,16 @@ userSchema.pre('save', function (next) {
 
    // minus 1s because sometimes the JWT token is received earlier than setting the passwordChangedAt, in that case it will cause problem
    this.passwordChangedAt = Date.now() - 1000;
+
+   next();
+});
+
+
+// hide the documents that are not active
+// apply to all the queries that start with 'find'
+userSchema.pre(/^find/, function (next) {
+   // this points to current query
+   this.find({ active: { $ne: false } });
 
    next();
 });
