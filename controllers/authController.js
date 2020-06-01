@@ -16,6 +16,20 @@ const signToken = (id) => {
 const createAndSendToken = (user, statusCode, res) => {
    const token = signToken(user._id); // _id comes from mongoose
 
+   const cookieOptions = {
+      expires: new Date(Date.now() + process.env.JWT_COOKIE_EXPIRES_IN * 24 * 60 * 60 * 1000),
+      httpOnly: true
+   }
+
+   if (process.env.NODE_ENV === 'production') {
+      cookieOptions.secure = true; // production must be in https protocol
+   }
+
+   res.cookie('jwt', token, cookieOptions);
+
+   // hide password from output
+   user.password = undefined;
+
    res.status(statusCode).json({
       status: 'success',
       token,
