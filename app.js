@@ -1,5 +1,6 @@
 const express = require('express');
 const morgan = require('morgan');
+const rateLimit = require('express-rate-limit');
 const app = express();
 
 const AppError = require('./utils/appError');
@@ -15,6 +16,14 @@ const userRouter = require('./routes/userRoutes');
 // --- middlewares used for all routes ---
 
 // middlewares are added in the middleware stack in order
+
+const limiter = rateLimit({
+   max: 100,
+   windows: 60 * 60 * 1000, // 1 hour
+   message: 'Too many requests from this IP. Try again in an hour'
+});
+app.use('/api', limiter);
+
 
 app.use(express.json()); // otherwise post request won't work
 
