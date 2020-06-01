@@ -1,6 +1,7 @@
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
+const helmet = require('helmet');
 const app = express();
 
 const AppError = require('./utils/appError');
@@ -17,6 +18,10 @@ const userRouter = require('./routes/userRoutes');
 
 // middlewares are added in the middleware stack in order
 
+// set security HTTP headers
+app.use(helmet());
+
+// limit number of requests
 const limiter = rateLimit({
    max: 100,
    windows: 60 * 60 * 1000, // 1 hour
@@ -25,9 +30,11 @@ const limiter = rateLimit({
 app.use('/api', limiter);
 
 
-app.use(express.json()); // otherwise post request won't work
+// body parser, reading data from body into req.body
+app.use(express.json({ limit: '10kb' })); // otherwise post request won't work
 
-app.use(express.static(`${__dirname}/public`)); // serve static files; public folder is for static files
+// serve static files; public folder is for static files
+app.use(express.static(`${__dirname}/public`));
 
 // custom middleware
 app.use((req, res, next) => {
