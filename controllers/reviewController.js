@@ -28,6 +28,8 @@ exports.getAllReviews = catchAsync(async (req, res, next) => {
       filter = { tour: req.params.tourId };
    }
 
+   // if filter is empty, will give all the reviews of all the tour
+   // if filter has tour value, then all the reviews of that particular tour will be given
    const reviews = await Review.find(filter);
 
    res.status(200).json({
