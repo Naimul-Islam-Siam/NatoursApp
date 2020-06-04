@@ -163,6 +163,17 @@ tourSchema.post(/^find/, function (docs, next) {
 });
 
 
+// will populate all queries starting with 'find'
+tourSchema.pre(/^find/, function (next) {
+   this.populate({
+      path: 'guides',
+      select: '-__v -passwordChangedAt' // will hide these 2
+   });
+
+   next();
+});
+
+
 // Aggregation Middleware
 // for aggregation pipeline
 tourSchema.pre('aggregate', function (next) {
