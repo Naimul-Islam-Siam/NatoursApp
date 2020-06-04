@@ -107,7 +107,12 @@ const tourSchema = new mongoose.Schema({
          day: Number // the day in which people will go to tour
       }
    ],
-   guides: Array
+   guides: [
+      {
+         type: mongoose.Schema.ObjectId,
+         ref: 'User'
+      }
+   ]
 }, {
    toJSON: { virtuals: true },
    toObject: { virtuals: true }
@@ -130,13 +135,13 @@ tourSchema.pre('save', function (next) {
 });
 
 
-// extract guides from users using id and add in tours
-tourSchema.pre('save', async function (next) {
-   const guidesPromises = this.guides.map(async id => User.findById(id)); // will return promises
-   this.guides = await Promise.all(guidesPromises);
+// // extract guides from users using id and add in tours
+// tourSchema.pre('save', async function (next) {
+//    const guidesPromises = this.guides.map(async id => User.findById(id)); // will return promises
+//    this.guides = await Promise.all(guidesPromises);
 
-   next();
-});
+//    next();
+// });
 
 
 // Query middleware
