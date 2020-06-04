@@ -1,11 +1,9 @@
 const express = require('express');
 const tourController = require('./../controllers/tourController'); // route handlers
 const authController = require('./../controllers/authController');
-const reviewController = require('./../controllers/reviewController');
 const { getAllTours, getIndividualTour, createTour, updateTour, deleteTour, aliasTopTours, getTourStats, getMonthlyPlan } = tourController;
 const { protect, restrictTo } = authController;
-const { createReview } = reviewController;
-
+const reviewRouter = require('./reviewRoutes');
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
 
@@ -42,11 +40,8 @@ router
 
 // POST  /tours/:tourId/reviews
 // GET  /tours/:tourId/reviews
-// GET  /tours/:tourId/reviews/:reviewId
 
-router
-   .route('/:tourId/reviews')
-   .post(protect, restrictTo('user'), createReview);
+router.use('/:tourId/reviews', reviewRouter); // if any url of this formation appears, use reviewRouter instead
 
 
 module.exports = router;
