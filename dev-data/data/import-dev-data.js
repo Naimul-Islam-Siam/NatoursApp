@@ -13,6 +13,7 @@ const DB = process.env.DATABASE.replace(
 // connect mongoose
 mongoose.connect(DB, {
    // these are like this for all projects
+   useUnifiedTopology: true,
    useNewUrlParser: true,
    useCreateIndex: true,
    useFindAndModify: false
@@ -21,7 +22,7 @@ mongoose.connect(DB, {
 });
 
 // read json file
-const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours-simple.json`, 'utf-8'));
+const tours = JSON.parse(fs.readFileSync(`${__dirname}/tours.json`, 'utf-8'));
 
 // import data to DB
 const importData = async () => {
