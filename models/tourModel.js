@@ -126,6 +126,15 @@ tourSchema.virtual('durationWeeks').get(function () {
 }); // must use normal function instead of arrow func. as 'this' will be pointing to schema
 
 
+// virtual populate
+// 'reviews' is the new virtual field in which reviews will be outputed in tour
+tourSchema.virtual('reviews', {
+   ref: 'Review', // the model that will be refered
+   foreignField: 'tour', // foreignField is the field that's in the ref model, where the reference to current model is stored
+   localField: '_id' // the field of current model that's stored in the ref model
+});
+
+
 // document middleware, manipulate the documents that are currently being saved
 // runs before .save() and .create()
 // doesn't run for update, insertMany

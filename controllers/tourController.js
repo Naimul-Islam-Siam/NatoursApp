@@ -41,7 +41,7 @@ exports.getAllTours = catchAsync(async (req, res, next) => {
 
 exports.getIndividualTour = catchAsync(async (req, res, next) => {
    // Tour.findById = Tour.findOne({ _id: req.params.id})
-   const tour = await Tour.findById(req.params.id);
+   const tour = await Tour.findById(req.params.id).populate('reviews');
 
    // 404
    if (!tour) {
