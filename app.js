@@ -10,8 +10,10 @@ const app = express();
 
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
+
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
+const reviewRouter = require('./routes/reviewRoutes');
 
 
 //============================
@@ -70,7 +72,8 @@ if (process.env.NODE_ENV === "development") {
 app.use('/api/v1/tours', tourRouter); // route mounting; middleware used for only tourRouter
 // users
 app.use('/api/v1/users', userRouter); // route mounting; middleware used for only userRouter
-
+// reviews
+app.use('/api/v1/reviews', reviewRouter);
 
 // unhandled routes - faulty req strcuture/mis-spelled
 // this middleware will be triggered only if the middlewares mentioned above aren't triggered
