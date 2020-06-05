@@ -14,14 +14,14 @@ const router = express.Router({ mergeParams: true }); // to get access to `:tour
 
 router
    .route('/')
-   .get(getAllReviews)
+   .get(protect, getAllReviews)
    .post(protect, restrictTo('user'), setTourAndUserIds, createReview);
 
 router
    .route('/:id')
-   .get(getIndividualReview)
-   .patch(updateReview)
-   .delete(deleteReview);
+   .get(protect, getIndividualReview)
+   .patch(protect, restrictTo('user'), updateReview)
+   .delete(protect, restrictTo('user', 'admin'), deleteReview);
 
 
 module.exports = router;
