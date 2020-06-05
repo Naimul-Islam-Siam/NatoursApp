@@ -1,6 +1,7 @@
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
+const handlerFactory = require('./handlerFactory');
 
 
 const filterObj = (obj, ...allowedFields) => {
@@ -58,46 +59,19 @@ exports.deactivateMe = catchAsync(async (req, res, next) => {
 // Route handler functions
 //============================
 
-exports.getAllUsers = catchAsync(async (req, res, next) => {
-   const users = await User.find();
+exports.getAllUsers = handlerFactory.getAll(User);
 
-   res.status(200).json({
-      status: 'success',
-      results: users.length,
-      data: {
-         users
-      }
-   });
-});
-
-
-exports.getIndividualUser = (req, res) => {
-   res.status(500).json({
-      status: 'error',
-      message: `This route isn't created yet`
-   });
-};
+exports.getIndividualUser = handlerFactory.getOne(User);
 
 
 exports.createUser = (req, res) => {
    res.status(500).json({
       status: 'error',
-      message: `This route isn't created yet`
+      message: `This route isn't defined. Please use /signup instead.`
    });
 };
 
 
-exports.updateUser = (req, res) => {
-   res.status(500).json({
-      status: 'error',
-      message: `This route isn't created yet`
-   });
-};
+exports.updateUser = handlerFactory.updateOne(User); // DO NOT update password using this
 
-
-exports.deleteUser = (req, res) => {
-   res.status(500).json({
-      status: 'error',
-      message: `This route isn't created yet`
-   });
-};
+exports.deleteUser = handlerFactory.deleteOne(User);

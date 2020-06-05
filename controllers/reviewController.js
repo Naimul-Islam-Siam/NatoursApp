@@ -1,8 +1,10 @@
 const Review = require('./../models/reviewModel');
-const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
+// const catchAsync = require('./../utils/catchAsync');
+// const AppError = require('./../utils/appError');
+const handlerFactory = require('./handlerFactory');
 
-exports.createReview = catchAsync(async (req, res, next) => {
+
+exports.setTourAndUserIds = (req, res, next) => {
    if (!req.body.tour) {
       req.body.tour = req.params.tourId;
    }
@@ -11,32 +13,16 @@ exports.createReview = catchAsync(async (req, res, next) => {
       req.body.user = req.user.id;
    }
 
-   const newReview = await Review.create(req.body);
+   next();
+}
 
-   res.status(201).json({
-      status: 'success',
-      data: {
-         review: newReview
-      }
-   })
-});
 
-exports.getAllReviews = catchAsync(async (req, res, next) => {
-   let filter = {};
+exports.getAllReviews = handlerFactory.getAll(Review);
 
-   if (req.params.tourId) {
-      filter = { tour: req.params.tourId };
-   }
+exports.getIndividualReview = handlerFactory.getOne(Review);
 
-   // if filter is empty, will give all the reviews of all the tour
-   // if filter has tour value, then all the reviews of that particular tour will be given
-   const reviews = await Review.find(filter);
+exports.createReview = handlerFactory.createOne(Review);
 
-   res.status(200).json({
-      status: 'success',
-      results: reviews.length,
-      data: {
-         reviews
-      }
-   });
-});
+exports.updateReview = handlerFactory.updateOne(Review);
+
+exports.deleteReview = handlerFactory.deleteOne(Review);

@@ -1,7 +1,8 @@
 const Tour = require('./../models/tourModel');
-const APIFeatures = require('./../utils/apiFeatures');
+// const APIFeatures = require('./../utils/apiFeatures');
 const catchAsync = require('./../utils/catchAsync');
-const AppError = require('./../utils/appError');
+// const AppError = require('./../utils/appError');
+const handlerFactory = require('./handlerFactory');
 
 // custom middleware
 // will auto prefill the followings to form a query and then call the next 
@@ -18,98 +19,103 @@ exports.aliasTopTours = (req, res, next) => {
 // Route handler functions
 //============================
 
-exports.getAllTours = catchAsync(async (req, res, next) => {
-   // --------- execute the query ---------
-   const features = new APIFeatures(Tour.find(), req.query)
-      .filter()
-      .sort()
-      .limitFields()
-      .paginate();
+exports.getAllTours = handlerFactory.getAll(Tour);
+// exports.getAllTours = catchAsync(async (req, res, next) => {
+//    // --------- execute the query ---------
+//    const features = new APIFeatures(Tour.find(), req.query)
+//       .filter()
+//       .sort()
+//       .limitFields()
+//       .paginate();
 
-   const tours = await features.query;
+//    const tours = await features.query;
 
-   res.status(200).json({
-      status: 'success',
-      requestedAt: req.requestTime,
-      results: tours.length,
-      data: {
-         tours
-      }
-   });
-});
-
-
-exports.getIndividualTour = catchAsync(async (req, res, next) => {
-   // Tour.findById = Tour.findOne({ _id: req.params.id})
-   const tour = await Tour.findById(req.params.id).populate('reviews');
-
-   // 404
-   if (!tour) {
-      const error = new AppError(`Couldn't find any tour with that ID`, 404);
-      return next(error);
-   }
-
-   res.status(200).json({
-      status: 'success',
-      data: {
-         tour
-      }
-   });
-});
+//    res.status(200).json({
+//       status: 'success',
+//       requestedAt: req.requestTime,
+//       results: tours.length,
+//       data: {
+//          tours
+//       }
+//    });
+// });
 
 
-exports.createTour = catchAsync(async (req, res, next) => {
-   // const newTour = new Tour(req.body)
-   // newTour.save(); //save to database
+exports.getIndividualTour = handlerFactory.getOne(Tour, { path: 'reviews' });
+// exports.getIndividualTour = catchAsync(async (req, res, next) => {
+//    // Tour.findById = Tour.findOne({ _id: req.params.id})
+//    const tour = await Tour.findById(req.params.id).populate('reviews');
 
-   const newTour = await Tour.create(req.body); // same as upper referene
+//    // 404
+//    if (!tour) {
+//       const error = new AppError(`Couldn't find any tour with that ID`, 404);
+//       return next(error);
+//    }
 
-   res.status(201).json({
-      status: 'success',
-      data: {
-         tour: newTour
-      }
-   });
-});
-
-
-exports.updateTour = catchAsync(async (req, res, next) => {
-   const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-      runValidators: true // otherwise will not accept validators defined in tourSchema
-   });
-   // runValidators enforce model schema, so price can't be anything other than number, otherwise it'll cause an error
-
-   // 404
-   if (!tour) {
-      const error = new AppError(`Couldn't find any tour with that ID`, 404);
-      return next(error);
-   }
-
-   res.status(200).json({
-      status: 'success',
-      data: {
-         tour // same as, tour: tour
-      }
-   });
-});
+//    res.status(200).json({
+//       status: 'success',
+//       data: {
+//          tour
+//       }
+//    });
+// });
 
 
-exports.deleteTour = catchAsync(async (req, res, next) => {
-   const tour = await Tour.findByIdAndDelete(req.params.id, req.body);
+exports.createTour = handlerFactory.createOne(Tour);
+// exports.createTour = catchAsync(async (req, res, next) => {
+//    // const newTour = new Tour(req.body)
+//    // newTour.save(); //save to database
 
-   // 404
-   if (!tour) {
-      const error = new AppError(`Couldn't find any tour with that ID`, 404);
-      return next(error);
-   }
+//    const newTour = await Tour.create(req.body); // same as upper referene
 
-   // status code for delete is 204
-   res.status(204).json({
-      status: 'success',
-      data: null
-   });
-});
+//    res.status(201).json({
+//       status: 'success',
+//       data: {
+//          tour: newTour
+//       }
+//    });
+// });
+
+
+exports.updateTour = handlerFactory.updateOne(Tour);
+// exports.updateTour = catchAsync(async (req, res, next) => {
+//    const tour = await Tour.findByIdAndUpdate(req.params.id, req.body, {
+//       new: true,
+//       runValidators: true // otherwise will not accept validators defined in tourSchema
+//    });
+//    // runValidators enforce model schema, so price can't be anything other than number, otherwise it'll cause an error
+
+//    // 404
+//    if (!tour) {
+//       const error = new AppError(`Couldn't find any tour with that ID`, 404);
+//       return next(error);
+//    }
+
+//    res.status(200).json({
+//       status: 'success',
+//       data: {
+//          tour // same as, tour: tour
+//       }
+//    });
+// });
+
+
+exports.deleteTour = handlerFactory.deleteOne(Tour);
+// exports.deleteTour = catchAsync(async (req, res, next) => {
+//    const tour = await Tour.findByIdAndDelete(req.params.id, req.body);
+
+//    // 404
+//    if (!tour) {
+//       const error = new AppError(`Couldn't find any tour with that ID`, 404);
+//       return next(error);
+//    }
+
+//    // status code for delete is 204
+//    res.status(204).json({
+//       status: 'success',
+//       data: null
+//    });
+// });
 
 
 //============================
