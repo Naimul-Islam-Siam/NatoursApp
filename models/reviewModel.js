@@ -60,10 +60,18 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
    ]);
 
    // update the tour with new stats and save
-   await Tour.findByIdAndUpdate(tourId, {
-      ratingsAverage: stats[0].avgRating,
-      ratingsQuantity: stats[0].numRatings
-   });
+   if (stats.length > 0) {
+      // only if the tour has any review at the first place
+      await Tour.findByIdAndUpdate(tourId, {
+         ratingsAverage: stats[0].avgRating,
+         ratingsQuantity: stats[0].numRatings
+      });
+   } else {
+      await Tour.findByIdAndUpdate(tourId, {
+         ratingsAverage: 4.5, // default
+         ratingsQuantity: 0
+      });
+   }
 };
 
 
@@ -71,7 +79,21 @@ reviewSchema.post('save', function () {
    // `this` points to the current document(current tour)\
    // `this.constructor` points to current Model (We can't use Review.calcAverageRatings here, as `Review` is created after this middleware)
 
-   this.constructor.calcAverageRatings(this.tour);
+   this.constructor.calcAverageRatings(this.tour); // this.tour will provide the tour id
+});
+
+
+// following 2 are for findByIdAndUpdate and findByIdAndDelete (can't use document middleware)
+// Query Middlewares
+reviewSchema.pre(/^findOneAnd/, async function (next) {
+   // `this.review` instead of `const review` to pass the data from pre to post
+   this.review = await this.findOne(); // retrieve current doc from DB, as document middlewares can't be use 
+   next();
+});
+
+
+reviewSchema.post(/^findOneAnd/, async function () {
+   await this.review.constructor.calcAverageRatings(this.review.tour); // this.tour will provide the tour id
 });
 
 
