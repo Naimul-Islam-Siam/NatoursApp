@@ -190,12 +190,12 @@ tourSchema.pre(/^find/, function (next) {
 
 // Aggregation Middleware
 // for aggregation pipeline
-tourSchema.pre('aggregate', function (next) {
-   this.pipeline().unshift({
-      $match: { secretTour: { $ne: true } }
-   });
-   next();
-});
+// tourSchema.pre('aggregate', function (next) {
+//    this.pipeline().unshift({
+//       $match: { secretTour: { $ne: true } }
+//    });
+//    next();
+// });
 
 
 // model
