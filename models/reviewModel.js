@@ -79,6 +79,7 @@ reviewSchema.statics.calcAverageRatings = async function (tourId) {
 };
 
 
+// for create
 reviewSchema.post('save', function () {
    // `this` points to the current document(current tour)\
    // `this.constructor` points to current Model (We can't use Review.calcAverageRatings here, as `Review` is created after this middleware)
