@@ -122,6 +122,7 @@ const tourSchema = new mongoose.Schema({
 
 tourSchema.index({ price: 1, ratingsAverage: -1 });
 tourSchema.index({ slug: 1 });
+tourSchema.index({ startLocation: '2dsphere' });
 
 // virtual properties: we don't need to store durationWeeks in database as duration is already stored
 // virtual property will make the duration converted to weeks after retrieving from the database
