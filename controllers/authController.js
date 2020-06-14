@@ -127,7 +127,11 @@ exports.login = catchAsync(async (req, res, next) => {
       return next(new AppError('Incorrect email or password', 401));
    }
 
+
+   // if account is not verified and user tries to login
    if (!user.validated) {
+      user.validated = false; // for safety turn it to false again
+
       const signupToken = signToken(user._id);
 
       const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
@@ -152,6 +156,8 @@ exports.login = catchAsync(async (req, res, next) => {
 
       return next(new AppError('Your account is not validated yet. Check your email and validate the account.', 401));
    }
+
+
 
    // (3) if everything is ok send token to client and provide access to client
    createAndSendToken(user, 200, res);
