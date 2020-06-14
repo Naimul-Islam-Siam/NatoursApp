@@ -52,8 +52,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordChangedAt: req.body.passwordChangedAt
    });
 
-   user.validated = false;
-
    const signupToken = signToken(newUser._id);
 
    const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
