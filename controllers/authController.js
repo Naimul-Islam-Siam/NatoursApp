@@ -29,6 +29,7 @@ const createAndSendToken = (user, statusCode, res) => {
 
    // hide password from output
    user.password = undefined;
+   user.validated = undefined;
 
    res.status(statusCode).json({
       status: 'success',
@@ -51,7 +52,54 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordChangedAt: req.body.passwordChangedAt
    });
 
-   createAndSendToken(newUser, 201, res);
+   user.validated = false;
+
+   const signupToken = signToken(newUser._id);
+
+   const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+
+   const message = `Submit a post request with ${signupURL} to activate your account.`;
+
+   // send the activation link to email
+   try {
+      await sendEmail({
+         email: newUser.email,
+         subject: `Follow the instructions to validate your account.`,
+         message
+      });
+
+      res.status(200).json({
+         status: 'success',
+         message: `Token sent to email!`
+      });
+   } catch (error) {
+      return next(new AppError(`There was an error sending email. Please try again later!`, 500));
+   }
+});
+
+
+// check validation of account through activation url sent to email
+exports.accountConfirm = catchAsync(async (req, res, next) => {
+   const { token } = req.params;
+
+   // verification of token (check if the token sent is not manipulated by any malicious attacks)
+   const decoded = await promisify(jwt.verify)(token, process.env.JWT_SECRET);
+
+   // check if the user to whom token was issued, still exists (what if user deleted his account after getting the token)
+   const user = await User.findById(decoded.id).select('+validated');
+
+   if (!user) {
+      return next(new AppError('The user belonging to this token does not exist.', 401));
+   }
+   if (user.validated) {
+      return next(new AppError('This account has already been validated', 400));
+   }
+
+   user.validated = true;
+
+   await user.save({ validateBeforeSave: false });
+
+   createAndSendToken(user, 200, res);
 });
 
 
@@ -65,7 +113,7 @@ exports.login = catchAsync(async (req, res, next) => {
    }
 
    // (2) Check if that user exists(email id) and if the password is correct
-   const user = await User.findOne({ email: email }).select('+password');
+   const user = await User.findOne({ email: email }).select('+password').select('+validated');
    // '+password': password is hidden from console for security in the userModel using select: false
    // but we need to know password from database to login. as it's hidden, we need to use '+password'
 
@@ -79,7 +127,31 @@ exports.login = catchAsync(async (req, res, next) => {
       return next(new AppError('Incorrect email or password', 401));
    }
 
+   if (!user.validated) {
+      const signupToken = signToken(user._id);
 
+      const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+
+      const message = `Submit a post request with ${signupURL} to activate your account.`;
+
+      // send the activation link to email
+      try {
+         await sendEmail({
+            email: user.email,
+            subject: `Follow the instructions to validate your account.`,
+            message
+         });
+
+         // res.status(200).json({
+         //    status: 'success',
+         //    message: `Token sent to email!`
+         // });
+      } catch (error) {
+         return next(new AppError(`There was an error sending email. Please try again later!`, 500));
+      }
+
+      return next(new AppError('Your account is not validated yet. Check your email and validate the account.', 401));
+   }
 
    // (3) if everything is ok send token to client and provide access to client
    createAndSendToken(user, 200, res);

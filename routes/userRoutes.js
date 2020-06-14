@@ -2,13 +2,16 @@ const express = require('express');
 const userController = require('./../controllers/userController'); // route handlers
 const authController = require('./../controllers/authController');
 const { getMe, getAllUsers, getIndividualUser, createUser, updateUser, deleteUser, updateMe, deactivateMe } = userController;
-const { signup, login, protect, restrictTo, forgotPassword, resetPassword, updatePassword } = authController;
+const { signup, accountConfirm, login, protect, restrictTo, forgotPassword, resetPassword, updatePassword } = authController;
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
 
 
 router
    .post('/signup', signup);
+
+router
+   .post('/accountConfirm/:token', accountConfirm);
 
 router
    .post('/login', login);
