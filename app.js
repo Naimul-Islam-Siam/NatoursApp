@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 const morgan = require('morgan');
 const rateLimit = require('express-rate-limit');
@@ -14,6 +15,10 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+
+
+app.set('view engine', 'pug');
+app.set('views', path.join(__dirname, 'views'));
 
 
 //============================
@@ -51,7 +56,8 @@ app.use(hpp({
 }));
 
 // serve static files; public folder is for static files
-app.use(express.static(`${__dirname}/public`));
+// app.use(express.static(`${__dirname}/public`));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // custom middleware
 app.use((req, res, next) => {
