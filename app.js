@@ -15,6 +15,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const viewRouter = require('./routes/viewRoutes');
 
 
 app.set('view engine', 'pug');
@@ -74,31 +75,14 @@ if (process.env.NODE_ENV === "development") {
 // Routes
 //============================
 
-app.get('/', (req, res) => {
-   res.status(200).render('base', {
-      title: "Exciting tours for adventurous people",
-      tour: "The Forest Hiker"
-   });
-});
-
-app.get('/overview', (req, res) => {
-   res.status(200).render('overview', {
-      title: "All Tours"
-   });
-});
-
-app.get('/tour', (req, res) => {
-   res.status(200).render('tour', {
-      title: "The Forest Hiker Tour"
-   });
-});
-
 // tours
 app.use('/api/v1/tours', tourRouter); // route mounting; middleware used for only tourRouter
 // users
 app.use('/api/v1/users', userRouter); // route mounting; middleware used for only userRouter
 // reviews
 app.use('/api/v1/reviews', reviewRouter);
+// views
+app.use('/', viewRouter);
 
 // unhandled routes - faulty req strcuture/mis-spelled
 // this middleware will be triggered only if the middlewares mentioned above aren't triggered
