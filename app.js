@@ -74,6 +74,10 @@ if (process.env.NODE_ENV === "development") {
 // Routes
 //============================
 
+app.get('/', (req, res) => {
+   res.status(200).render('base');
+});
+
 // tours
 app.use('/api/v1/tours', tourRouter); // route mounting; middleware used for only tourRouter
 // users
