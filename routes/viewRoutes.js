@@ -3,14 +3,15 @@ const router = express.Router();
 const viewController = require('./../controllers/viewController');
 const authController = require('./../controllers/authController');
 const { getOverview, getTour, getLoginForm } = viewController;
-const { protect } = authController;
+const { isLoggedIn } = authController;
 
+router.use(isLoggedIn);
 
 router
    .get('/', getOverview);
 
 router
-   .get('/tour/:slug', protect, getTour);
+   .get('/tour/:slug', getTour);
 
 router
    .get('/login', getLoginForm);
