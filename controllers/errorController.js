@@ -32,31 +32,61 @@ const handleJWTExpiredError = () => {
 };
 
 
-const sendErrorDev = (err, res) => {
-   res.status(err.statusCode).json({
-      status: err.status,
-      error: err,
-      message: err.message,
-      stack: err.stack
-   });
+const sendErrorDev = (err, req, res) => {
+   // A) API
+   if (req.originalUrl.startsWith('/api')) {
+      return res.status(err.statusCode).json({
+         status: err.status,
+         error: err,
+         message: err.message,
+         stack: err.stack
+      });
+   } else {
+      // B) Rendered Website
+      console.error('ERROR 💥', err);
+      return res.status(err.statusCode).render('error', {
+         title: 'Something went wrong!',
+         msg: err.message
+      });
+   }
 };
 
 
-const sendErrorProd = (err, res) => {
-   // operational errors: send message to client
-   if (err.isOperational) {
-      res.status(err.statusCode).json({
-         status: err.status,
-         message: err.message
-      });
-   } else {
-      // programming error, third pirty error: don't leak details of errors to client
-      console.error('ERROR 💥', err);
+const sendErrorProd = (err, req, res) => {
+   // A) API
+   if (req.originalUrl.startsWith('/api')) {
+      // operational errors: send message to client
+      if (err.isOperational) {
+         return res.status(err.statusCode).json({
+            status: err.status,
+            message: err.message
+         });
+      } else {
+         // programming error, third pirty error: don't leak details of errors to client
+         console.error('ERROR 💥', err);
 
-      res.status(500).json({
-         status: 'error',
-         message: 'Something went very wrong'
-      });
+         return res.status(500).json({
+            status: 'error',
+            message: 'Something went very wrong'
+         });
+      }
+   } else {
+      // B) Rendered Website
+      // operational errors: send message to client
+      if (err.isOperational) {
+         return res.status(err.statusCode).render('error', {
+            title: 'Something went wrong!',
+            msg: err.message
+         });
+      } else {
+         // programming error, third pirty error: don't leak details of errors to client
+         console.error('ERROR 💥', err);
+
+         return res.status(err.statusCode).render('error', {
+            title: 'Something went wrong!',
+            msg: 'Please try again later'
+         });
+      }
    }
 };
 
@@ -67,9 +97,10 @@ module.exports = (err, req, res, next) => {
    err.status = err.status || 'error'; // status = fail/error
 
    if (process.env.NODE_ENV === 'development') {
-      sendErrorDev(err, res);
+      sendErrorDev(err, req, res);
    } else if (process.env.NODE_ENV === 'production') {
       let error = { ...err }; // hard copy of err it's not good practice to directly manipulate the argument
+      error.message = err.message; // otherwise doesn't work
 
       // for invalid id
       if (error.name === 'CastError') {
@@ -96,7 +127,7 @@ module.exports = (err, req, res, next) => {
          error = handleJWTExpiredError();
       }
 
-      sendErrorProd(error, res);
+      sendErrorProd(error, req, res);
    }
 
    next();
