@@ -162,6 +162,20 @@ exports.login = catchAsync(async (req, res, next) => {
 });
 
 
+// logout. As login cookie is httpOnly, so the browser can't manipulate or delete that
+// so to logout, we use the same cookie name with a randow text token to invalidate the previous actual one
+exports.logout = (req, res) => {
+   res.cookie('jwt', 'anytext', {
+      expires: new Date(Date.now() + 10 * 1000), // expires in 10 seconds
+      httpOnly: true
+   });
+
+   res.status(200).json({
+      status: 'success'
+   });
+};
+
+
 // protect route middleware
 exports.protect = catchAsync(async (req, res, next) => {
    let token;
@@ -326,29 +340,33 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
 
 
 // only for render
-exports.isLoggedIn = catchAsync(async (req, res, next) => {
-   // 1) getting token and check if it's there
-   if (req.cookies.jwt) {
-      // 2) verification of token (check if the token sent is not manipulated by any malicious attacks)
-      const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
+exports.isLoggedIn = async (req, res, next) => {
+   try {
+      // 1) getting token and check if it's there
+      if (req.cookies.jwt) {
+         // 2) verification of token (check if the token sent is not manipulated by any malicious attacks)
+         const decoded = await promisify(jwt.verify)(req.cookies.jwt, process.env.JWT_SECRET);
 
-      // 3) check if the user to whom token was issued, still exists (what if user deleted his account after getting the token)
-      const currentUser = await User.findById(decoded.id);
+         // 3) check if the user to whom token was issued, still exists (what if user deleted his account after getting the token)
+         const currentUser = await User.findById(decoded.id);
 
-      if (!currentUser) {
+         if (!currentUser) {
+            return next();
+         }
+
+         // 4) check if user changed password after the token was issued (what if user changed his password after guessing a security threat)
+
+         if (currentUser.changedPasswordAfter(decoded.iat)) {
+            // changedPasswordAfter is got as document instant from userModel, decoded.iat = the time at when token was issued
+            return next();
+         }
+
+         // if everything is ok, there is a logged in user
+         res.locals.user = currentUser; // will pass `user` to pug template
          return next();
       }
-
-      // 4) check if user changed password after the token was issued (what if user changed his password after guessing a security threat)
-
-      if (currentUser.changedPasswordAfter(decoded.iat)) {
-         // changedPasswordAfter is got as document instant from userModel, decoded.iat = the time at when token was issued
-         return next();
-      }
-
-      // if everything is ok, there is a logged in user
-      res.locals.user = currentUser; // will pass `user` to pug template
+      next();
+   } catch (error) {
       return next();
    }
-   next();
-});
+};
