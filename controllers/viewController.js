@@ -42,3 +42,10 @@ exports.getLoginForm = catchAsync(async (req, res, next) => {
       title: 'Login to your account'
    });
 });
+
+
+exports.getAccount = (req, res) => {
+   res.status(200).render('account', {
+      title: `${res.locals.user.name}'s Account`
+   });
+};
