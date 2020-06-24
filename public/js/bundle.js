@@ -8411,7 +8411,7 @@ var login = /*#__PURE__*/function () {
               (0, _alerts.showAlert)('success', 'Logged in successfully');
               window.setTimeout(function () {
                 location.assign('/');
-              }, 1300);
+              }, 1000);
             }
 
             _context.next = 11;
@@ -8455,7 +8455,9 @@ var logout = /*#__PURE__*/function () {
             result = _context2.sent;
 
             if (result.data.status === 'success') {
-              location.reload(true);
+              window.setTimeout(function () {
+                location.assign('/');
+              }, 300); // location.reload(true);
             }
 
             _context2.next = 10;
@@ -8784,7 +8786,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "5176" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "3576" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};
