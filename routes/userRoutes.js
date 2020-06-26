@@ -1,8 +1,9 @@
 const express = require('express');
 const userController = require('./../controllers/userController'); // route handlers
 const authController = require('./../controllers/authController');
-const { getMe, getAllUsers, getIndividualUser, createUser, updateUser, deleteUser, updateMe, deactivateMe } = userController;
+const { uploadUserPhoto, getMe, getAllUsers, getIndividualUser, createUser, updateUser, deleteUser, updateMe, deactivateMe } = userController;
 const { signup, accountConfirm, login, logout, protect, restrictTo, forgotPassword, resetPassword, updatePassword } = authController;
+
 
 const router = express.Router(); // router middleware; express.Router() is a middleware
 
@@ -32,7 +33,7 @@ router
    .get('/me', protect, getMe, getIndividualUser);
 
 router
-   .patch('/updateMe', protect, updateMe);
+   .patch('/updateMe', protect, uploadUserPhoto, updateMe);
 
 router
    .delete('/deactivateMe', protect, deactivateMe);
