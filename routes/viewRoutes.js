@@ -18,7 +18,7 @@ router
 router
    .get('/me', protect, getAccount);
 
-router
-   .post('/submit-user-data', protect, updateUserData)
+// router
+//    .post('/submit-user-data', protect, updateUserData)
 
 module.exports = router;

@@ -52,17 +52,17 @@ exports.getAccount = (req, res) => {
 };
 
 
-exports.updateUserData = catchAsync(async (req, res, next) => {
-   const updatedUser = await User.findByIdAndUpdate(req.user.id, {
-      name: req.body.name,
-      email: req.body.email
-   }, {
-      new: true,
-      runValidators: true
-   });
+// exports.updateUserData = catchAsync(async (req, res, next) => {
+//    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
+//       name: req.body.name,
+//       email: req.body.email
+//    }, {
+//       new: true,
+//       runValidators: true
+//    });
 
-   res.status(200).render('account', {
-      title: `${res.locals.user.name}'s Account`,
-      user: updatedUser
-   });
-});
+//    res.status(200).render('account', {
+//       title: `${res.locals.user.name}'s Account`,
+//       user: updatedUser
+//    });
+// });
