@@ -33,8 +33,16 @@ exports.updateMe = catchAsync(async (req, res, next) => {
    // 2) filter out unwanted field names that are not allowed to be updated
    const filteredBody = filterObj(req.body, 'name', 'email');
 
+   // 3) Check if the newly provided data is already the existing one
+   const user = await User.findById(req.user.id);
 
-   // 3) if not the above, update user document
+   // if both name and email are unchanged, then trigger this
+   // otherwise even if user wants to change just his name, it will trigger
+   if (user.name === req.body.name && user.email === req.body.email) {
+      return next(new AppError(`This is already your current data.`));
+   }
+
+   // 4) if not the above, update user document
 
    // works only for logged in user. so we can get req.user.id in that way
    // we didn't use save() cause that will ask for other fields like password
