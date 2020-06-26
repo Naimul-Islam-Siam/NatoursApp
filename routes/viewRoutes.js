@@ -2,7 +2,7 @@ const express = require('express');
 const router = express.Router();
 const viewController = require('./../controllers/viewController');
 const authController = require('./../controllers/authController');
-const { getOverview, getTour, getLoginForm, getAccount } = viewController;
+const { getOverview, getTour, getLoginForm, getAccount, updateUserData } = viewController;
 const { isLoggedIn, protect } = authController;
 
 
@@ -17,5 +17,8 @@ router
 
 router
    .get('/me', protect, getAccount);
+
+router
+   .post('/submit-user-data', protect, updateUserData)
 
 module.exports = router;
