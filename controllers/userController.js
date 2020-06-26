@@ -19,7 +19,7 @@ const handlerFactory = require('./handlerFactory');
 const multerStorage = multer.memoryStorage();
 
 const multerFilter = (req, file, cb) => {
-   if (req.file.mimetype.startsWith('image')) {
+   if (file.mimetype.startsWith('image')) {
       cb(null, true);
    } else {
       cb(new AppError(`Please upload only images.`, 400), false);
@@ -89,8 +89,10 @@ exports.updateMe = catchAsync(async (req, res, next) => {
 
    // if both name and email are unchanged, then trigger this
    // otherwise even if user wants to change just his name, it will trigger
-   if (user.name === req.body.name && user.email === req.body.email) {
-      return next(new AppError(`This is already your current data.`));
+   if (!req.file) {
+      if (user.name === req.body.name && user.email === req.body.email) {
+         return next(new AppError(`This is already your current data.`));
+      }
    }
 
    // 4) if not the above, update user document
