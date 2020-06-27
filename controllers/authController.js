@@ -4,7 +4,7 @@ const jwt = require('jsonwebtoken');
 const User = require('./../models/userModel');
 const catchAsync = require('./../utils/catchAsync');
 const AppError = require('./../utils/appError');
-const sendEmail = require('./../utils/email');
+const Email = require('./../utils/email');
 
 
 const signToken = (id) => {
@@ -52,19 +52,14 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordChangedAt: req.body.passwordChangedAt
    });
 
-   const signupToken = signToken(newUser._id);
-
-   const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
-
-   const message = `Submit a post request with ${signupURL} to activate your account.`;
 
    // send the activation link to email
    try {
-      await sendEmail({
-         email: newUser.email,
-         subject: `Follow the instructions to validate your account.`,
-         message
-      });
+      const signupToken = signToken(newUser._id);
+
+      const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+
+      await new Email(newUser, signupURL).sendValidateSignup();
 
       res.status(200).json({
          status: 'success',
@@ -130,19 +125,13 @@ exports.login = catchAsync(async (req, res, next) => {
    if (!user.validated) {
       user.validated = false; // for safety turn it to false again
 
-      const signupToken = signToken(user._id);
-
-      const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
-
-      const message = `Submit a post request with ${signupURL} to activate your account.`;
-
       // send the activation link to email
       try {
-         await sendEmail({
-            email: user.email,
-            subject: `Follow the instructions to validate your account.`,
-            message
-         });
+         const signupToken = signToken(user._id);
+
+         const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+
+         await new Email(user, signupURL).sendValidateLogin();
 
          // res.status(200).json({
          //    status: 'success',
@@ -243,17 +232,11 @@ exports.forgotPassword = catchAsync(async (req, res, next) => {
    await user.save({ validateBeforeSave: false }); // turn off validators before save()
 
 
-   // 3) Send token to the user via email
-   const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
-
-   const message = `Forgot your password? Submit a patch a request to ${resetURL} with your new password.\nPlease ignore if you didn't forget your password.`;
-
    try {
-      await sendEmail({
-         email: user.email,
-         subject: `Your password reset token (valid for 5 min).`,
-         message
-      });
+      // 3) Send token to the user via email
+      const resetURL = `${req.protocol}://${req.get('host')}/api/v1/users/resetPassword/${resetToken}`;
+
+      await new Email(user, resetURL).sendPasswordReset();
 
       res.status(200).json({
          status: 'success',
