@@ -16,6 +16,7 @@ const globalErrorHandler = require('./controllers/errorController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
+const bookingRouter = require('./routes/bookingRoutes');
 const viewRouter = require('./routes/viewRoutes');
 
 
@@ -84,6 +85,8 @@ app.use('/api/v1/tours', tourRouter); // route mounting; middleware used for onl
 app.use('/api/v1/users', userRouter); // route mounting; middleware used for only userRouter
 // reviews
 app.use('/api/v1/reviews', reviewRouter);
+// bookings
+app.use('/api/v1/bookings', bookingRouter);
 // views
 app.use('/', viewRouter);
 
