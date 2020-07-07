@@ -31,6 +31,11 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
       return next(error);
    }
 
+   // authorization
+   if (doc.user._id !== req.user._id) {
+      return next(new AppError(`You don't have permission to perform this action.`, 403));
+   }
+
    res.status(200).json({
       status: 'success',
       data: {
@@ -47,6 +52,11 @@ exports.deleteOne = Model => catchAsync(async (req, res, next) => {
    if (!doc) {
       const error = new AppError(`Couldn't find any document with that ID`, 404);
       return next(error);
+   }
+
+   // authorization
+   if (doc.user._id !== req.user._id) {
+      return next(new AppError(`You don't have permission to perform this action.`, 403));
    }
 
    // status code for delete is 204
