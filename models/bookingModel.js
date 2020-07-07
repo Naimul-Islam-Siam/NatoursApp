@@ -26,6 +26,10 @@ const bookingSchema = mongoose.Schema({
 });
 
 
+// prevent duplicate booking of same tour from same user
+bookingSchema.index({ tour: 1, user: 1 }, { unique: true });
+
+
 bookingSchema.pre(/^find/, function (next) {
    this.populate('user').populate({
       path: 'tour',
