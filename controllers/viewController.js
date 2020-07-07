@@ -40,6 +40,16 @@ exports.getTour = catchAsync(async (req, res, next) => {
 
 
 exports.getLoginForm = catchAsync(async (req, res, next) => {
+   // if a logged in user is already there
+   if (res.locals.user) {
+      res.writeHead(302, {
+         'Location': '/'
+      });
+      res.end();
+
+      return next();
+   }
+
    res.status(200).render('login', {
       title: 'Login to your account'
    });
