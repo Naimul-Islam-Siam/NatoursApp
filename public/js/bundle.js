@@ -8890,55 +8890,26 @@ var userPasswordForm = document.querySelector('.form-user-password');
 var bookBtn = document.getElementById('book-tour');
 
 if (loginForm) {
-  loginForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var email = document.getElementById('email').value;
-    var password = document.getElementById('password').value;
-    (0, _login.login)(email, password);
-  });
-}
-
-if (logoutBtn) {
-  logoutBtn.addEventListener('click', _login.logout);
-}
-
-if (userDataForm) {
-  userDataForm.addEventListener('submit', function (e) {
-    e.preventDefault();
-    var form = new FormData();
-    form.append('name', document.getElementById('name').value);
-    form.append('email', document.getElementById('email').value);
-    form.append('photo', document.getElementById('photo').files[0]);
-    (0, _updateSettings.updateSettings)(form, 'data');
-  });
-}
-
-if (userPasswordForm) {
-  userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {
+  loginForm.addEventListener('submit', /*#__PURE__*/function () {
     var _ref = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee(e) {
-      var passwordCurrent, password, passwordConfirm;
+      var email, password;
       return regeneratorRuntime.wrap(function _callee$(_context) {
         while (1) {
           switch (_context.prev = _context.next) {
             case 0:
               e.preventDefault();
-              document.querySelector('.btn--save-password').textContent = 'Updating...';
-              passwordCurrent = document.getElementById('password-current').value;
+              e.submitter.style.filter = 'brightness(70%)';
+              e.submitter.disabled = true;
+              e.submitter.style.cursor = 'not-allowed';
+              email = document.getElementById('email').value;
               password = document.getElementById('password').value;
-              passwordConfirm = document.getElementById('password-confirm').value;
-              _context.next = 7;
-              return (0, _updateSettings.updateSettings)({
-                passwordCurrent: passwordCurrent,
-                password: password,
-                passwordConfirm: passwordConfirm
-              }, 'password');
+              _context.next = 8;
+              return (0, _login.login)(email, password);
 
-            case 7:
-              document.querySelector('.btn--save-password').textContent = 'Save Password'; // clear the fields
-
-              document.getElementById('password-current').value = '';
-              document.getElementById('password').value = '';
-              document.getElementById('password-confirm').value = '';
+            case 8:
+              e.submitter.style.filter = 'brightness(100%)';
+              e.submitter.disabled = false;
+              e.submitter.style.cursor = 'pointer';
 
             case 11:
             case "end":
@@ -8954,27 +8925,37 @@ if (userPasswordForm) {
   }());
 }
 
-if (bookBtn) {
-  bookBtn.addEventListener('click', /*#__PURE__*/function () {
+if (logoutBtn) {
+  logoutBtn.addEventListener('click', _login.logout);
+}
+
+if (userDataForm) {
+  userDataForm.addEventListener('submit', /*#__PURE__*/function () {
     var _ref2 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee2(e) {
-      var tourId;
+      var form;
       return regeneratorRuntime.wrap(function _callee2$(_context2) {
         while (1) {
           switch (_context2.prev = _context2.next) {
             case 0:
-              e.target.textContent = 'Processing...';
-              e.target.disabled = true;
-              e.target.style.cursor = 'not-allowed';
-              tourId = e.target.dataset.tourId;
-              _context2.next = 6;
-              return (0, _stripe.bookTour)(tourId);
+              e.preventDefault();
+              e.submitter.textContent = 'Updating...';
+              e.submitter.style.filter = 'brightness(70%)';
+              e.submitter.disabled = true;
+              e.submitter.style.cursor = 'not-allowed';
+              form = new FormData();
+              form.append('name', document.getElementById('name').value);
+              form.append('email', document.getElementById('email').value);
+              form.append('photo', document.getElementById('photo').files[0]);
+              _context2.next = 11;
+              return (0, _updateSettings.updateSettings)(form, 'data');
 
-            case 6:
-              e.target.textContent = 'Book tour now!';
-              e.target.disabled = false;
-              e.target.style.cursor = 'pointer';
+            case 11:
+              e.submitter.textContent = 'Save Settings';
+              e.submitter.style.filter = 'brightness(100%)';
+              e.submitter.disabled = false;
+              e.submitter.style.cursor = 'pointer';
 
-            case 9:
+            case 15:
             case "end":
               return _context2.stop();
           }
@@ -8984,6 +8965,89 @@ if (bookBtn) {
 
     return function (_x2) {
       return _ref2.apply(this, arguments);
+    };
+  }());
+}
+
+if (userPasswordForm) {
+  userPasswordForm.addEventListener('submit', /*#__PURE__*/function () {
+    var _ref3 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee3(e) {
+      var passwordCurrent, password, passwordConfirm;
+      return regeneratorRuntime.wrap(function _callee3$(_context3) {
+        while (1) {
+          switch (_context3.prev = _context3.next) {
+            case 0:
+              e.preventDefault();
+              document.querySelector('.btn--save-password').textContent = 'Updating...';
+              document.querySelector('.btn--save-password').style.filter = 'brightness(70%)';
+              document.querySelector('.btn--save-password').disabled = true;
+              document.querySelector('.btn--save-password').style.cursor = 'not-allowed';
+              passwordCurrent = document.getElementById('password-current').value;
+              password = document.getElementById('password').value;
+              passwordConfirm = document.getElementById('password-confirm').value;
+              _context3.next = 10;
+              return (0, _updateSettings.updateSettings)({
+                passwordCurrent: passwordCurrent,
+                password: password,
+                passwordConfirm: passwordConfirm
+              }, 'password');
+
+            case 10:
+              document.querySelector('.btn--save-password').textContent = 'Save Password';
+              document.querySelector('.btn--save-password').style.filter = 'brightness(100%)';
+              document.querySelector('.btn--save-password').disabled = false;
+              document.querySelector('.btn--save-password').style.cursor = 'pointer'; // clear the fields
+
+              document.getElementById('password-current').value = '';
+              document.getElementById('password').value = '';
+              document.getElementById('password-confirm').value = '';
+
+            case 17:
+            case "end":
+              return _context3.stop();
+          }
+        }
+      }, _callee3);
+    }));
+
+    return function (_x3) {
+      return _ref3.apply(this, arguments);
+    };
+  }());
+}
+
+if (bookBtn) {
+  bookBtn.addEventListener('click', /*#__PURE__*/function () {
+    var _ref4 = _asyncToGenerator( /*#__PURE__*/regeneratorRuntime.mark(function _callee4(e) {
+      var tourId;
+      return regeneratorRuntime.wrap(function _callee4$(_context4) {
+        while (1) {
+          switch (_context4.prev = _context4.next) {
+            case 0:
+              e.target.textContent = 'Processing...';
+              e.target.style.filter = 'brightness(70%)';
+              e.target.disabled = true;
+              e.target.style.cursor = 'not-allowed';
+              tourId = e.target.dataset.tourId;
+              _context4.next = 7;
+              return (0, _stripe.bookTour)(tourId);
+
+            case 7:
+              e.target.textContent = 'Book tour now!';
+              e.target.style.filter = 'brightness(100%)';
+              e.target.disabled = false;
+              e.target.style.cursor = 'pointer';
+
+            case 11:
+            case "end":
+              return _context4.stop();
+          }
+        }
+      }, _callee4);
+    }));
+
+    return function (_x4) {
+      return _ref4.apply(this, arguments);
     };
   }());
 }
