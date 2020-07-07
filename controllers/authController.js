@@ -43,6 +43,17 @@ const createAndSendToken = (user, statusCode, res) => {
 
 // signup
 exports.signup = catchAsync(async (req, res, next) => {
+   const user = await User.findOne({ email: req.body.email }).select('+validated');
+
+   if (user && !user.validated) {
+      return next(new AppError(`Your account is not verified yet. Check your Email.`, 500));
+   }
+
+   if (user && user.validated) {
+      return next(new AppError(`An account with this Email already exists.`, 500));
+   }
+
+
    // const newUser = await User.create(req.body) can cause serious security issues as anyone set the role: admin
    const newUser = await User.create({
       name: req.body.name,
@@ -51,7 +62,6 @@ exports.signup = catchAsync(async (req, res, next) => {
       passwordConfirm: req.body.passwordConfirm,
       passwordChangedAt: req.body.passwordChangedAt
    });
-
 
    // send the activation link to email
    try {

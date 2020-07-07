@@ -56,6 +56,41 @@ exports.getLoginForm = catchAsync(async (req, res, next) => {
 });
 
 
+exports.getSignupForm = catchAsync(async (req, res, next) => {
+   // if a logged in user is already there
+   if (res.locals.user) {
+      res.writeHead(302, {
+         'Location': '/'
+      });
+      res.end();
+
+      return next();
+   }
+
+   res.status(200).render('signup', {
+      title: 'Create a new account'
+   });
+});
+
+
+exports.verifyAccount = catchAsync(async (req, res, next) => {
+   console.log(res.locals.user);
+   // if a logged in user is already there
+   if (res.locals.user) {
+      res.writeHead(302, {
+         'Location': '/'
+      });
+      res.end();
+
+      return next();
+   }
+
+   res.status(200).render('verify', {
+      title: 'Verify your account'
+   });
+});
+
+
 exports.getAccount = (req, res) => {
    res.status(200).render('account', {
       title: `${res.locals.user.name}'s Account`

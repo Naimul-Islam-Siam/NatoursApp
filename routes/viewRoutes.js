@@ -3,7 +3,7 @@ const router = express.Router();
 const viewController = require('./../controllers/viewController');
 const authController = require('./../controllers/authController');
 const bookingController = require('./../controllers/bookingController');
-const { getOverview, getTour, getLoginForm, getAccount, getMyTours, updateUserData } = viewController;
+const { getOverview, getTour, getLoginForm, getSignupForm, getAccount, getMyTours, verifyAccount, updateUserData } = viewController;
 const { isLoggedIn, protect } = authController;
 const { createBookingCheckout } = bookingController;
 
@@ -15,6 +15,12 @@ router
 
 router
    .get('/login', isLoggedIn, getLoginForm);
+
+router
+   .get('/signup', isLoggedIn, getSignupForm);
+
+router
+   .get('/verify', isLoggedIn, verifyAccount);
 
 router
    .get('/me', protect, getAccount);
