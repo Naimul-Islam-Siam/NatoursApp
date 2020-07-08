@@ -67,9 +67,9 @@ exports.signup = catchAsync(async (req, res, next) => {
    try {
       const signupToken = signToken(newUser._id);
 
-      const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+      const signupURL = `${req.protocol}://${req.get('host')}/verify`;
 
-      await new Email(newUser, signupURL).sendValidateSignup();
+      await new Email(newUser, signupURL, signupToken).sendValidateSignup();
 
       res.status(200).json({
          status: 'success',
@@ -139,9 +139,9 @@ exports.login = catchAsync(async (req, res, next) => {
       try {
          const signupToken = signToken(user._id);
 
-         const signupURL = `${req.protocol}://${req.get('host')}/api/v1/users/accountConfirm/${signupToken}`;
+         const signupURL = `${req.protocol}://${req.get('host')}/verify`;
 
-         await new Email(user, signupURL).sendValidateLogin();
+         await new Email(user, signupURL, signupToken).sendValidateLogin();
 
          // res.status(200).json({
          //    status: 'success',

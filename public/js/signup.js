@@ -18,7 +18,7 @@ export const signup = async (name, email, password, passwordConfirm) => {
          showAlert('success', 'Check your email to verify the account.');
          window.setTimeout(() => {
             location.assign('/verify');
-         }, 1000);
+         }, 2000);
       }
    } catch (error) {
       showAlert('error', error.response.data.message);

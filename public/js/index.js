@@ -3,6 +3,7 @@ import { login, logout } from './login';
 import { deactivate } from './deactivate';
 import { signup } from './signup';
 import { updateSettings } from './updateSettings';
+import { verify } from './verify';
 import { bookTour } from './stripe';
 
 const loginForm = document.querySelector('#form--login');
@@ -12,6 +13,7 @@ const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
 const deactivateBtn = document.getElementById('deactivate-btn');
+const verifyForm = document.querySelector('#form-verify');
 
 if (loginForm) {
    loginForm.addEventListener('submit', async e => {
@@ -137,5 +139,25 @@ if (deactivateBtn) {
       e.target.style.filter = 'brightness(100%)';
       e.target.disabled = false;
       e.target.style.cursor = 'pointer';
+   });
+}
+
+if (verifyForm) {
+   verifyForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      e.submitter.style.filter = 'brightness(70%)';
+      e.submitter.disabled = true;
+      e.submitter.style.cursor = 'not-allowed';
+
+      const token = document.getElementById('token').value;
+
+      console.log(token);
+
+      await verify(token);
+
+      e.submitter.style.filter = 'brightness(100%)';
+      e.submitter.disabled = false;
+      e.submitter.style.cursor = 'pointer';
    });
 }

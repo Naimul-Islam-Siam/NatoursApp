@@ -3,11 +3,12 @@ const pug = require('pug');
 const htmlToText = require('html-to-text');
 
 module.exports = class Email {
-   constructor(user, url) {
+   constructor(user, url, token) {
       this.to = user.email;
       this.firstName = user.name.split(' ')[0];
       this.url = url;
       this.from = `Admin of NatoursApp <${process.env.EMAIL_FROM}>`;
+      this.token = token;
    }
 
    // 1) Create a transporter
@@ -32,6 +33,7 @@ module.exports = class Email {
       const html = pug.renderFile(`${__dirname}/../views/emails/${template}.pug`, {
          firstName: this.firstName,
          url: this.url,
+         token: this.token,
          subject
       });
 
