@@ -74,7 +74,6 @@ exports.getSignupForm = catchAsync(async (req, res, next) => {
 
 
 exports.verifyAccount = catchAsync(async (req, res, next) => {
-   console.log(res.locals.user);
    // if a logged in user is already there
    if (res.locals.user) {
       res.writeHead(302, {

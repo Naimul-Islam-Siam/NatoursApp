@@ -1,5 +1,6 @@
 import '@babel/polyfill';
 import { login, logout } from './login';
+import { deactivate } from './deactivate';
 import { signup } from './signup';
 import { updateSettings } from './updateSettings';
 import { bookTour } from './stripe';
@@ -10,6 +11,7 @@ const signupForm = document.querySelector('#form--signup');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
 const bookBtn = document.getElementById('book-tour');
+const deactivateBtn = document.getElementById('deactivate-btn');
 
 if (loginForm) {
    loginForm.addEventListener('submit', async e => {
@@ -117,6 +119,21 @@ if (bookBtn) {
       await bookTour(tourId);
 
       e.target.textContent = 'Book tour now!';
+      e.target.style.filter = 'brightness(100%)';
+      e.target.disabled = false;
+      e.target.style.cursor = 'pointer';
+   });
+}
+
+
+if (deactivateBtn) {
+   deactivateBtn.addEventListener('click', async e => {
+      e.target.style.filter = 'brightness(70%)';
+      e.target.disabled = true;
+      e.target.style.cursor = 'not-allowed';
+
+      await deactivate();
+
       e.target.style.filter = 'brightness(100%)';
       e.target.disabled = false;
       e.target.style.cursor = 'pointer';
