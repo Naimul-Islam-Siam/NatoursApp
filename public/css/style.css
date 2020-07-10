@@ -298,6 +298,16 @@ body {
   outline-offset: 3px;
 }
 
+.btn-forgot-pass {
+  color: #55c57a;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.btn-forgot-pass:hover {
+  text-decoration: none;
+}
+
 .header {
   background-color: #444;
   padding: 0 5rem;
