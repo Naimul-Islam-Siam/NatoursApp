@@ -302,6 +302,7 @@ body {
   color: #55c57a;
   font-size: 16px;
   font-weight: 700;
+  transition: 0.2s;
 }
 
 .btn-forgot-pass:hover {
