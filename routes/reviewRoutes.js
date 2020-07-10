@@ -1,7 +1,9 @@
 const express = require('express');
 const reviewController = require('./../controllers/reviewController');
 const authController = require('./../controllers/authController');
+const bookingController = require('./../controllers/bookingController');
 const { protect, restrictTo } = authController;
+const { isBooked } = bookingController;
 const { setTourAndUserIds, getIndividualReview, createReview, getAllReviews, updateReview, deleteReview } = reviewController;
 
 const router = express.Router({ mergeParams: true }); // to get access to `:tourId` param from tourRoutes
@@ -15,7 +17,7 @@ const router = express.Router({ mergeParams: true }); // to get access to `:tour
 router
    .route('/')
    .get(protect, getAllReviews)
-   .post(protect, restrictTo('user'), setTourAndUserIds, createReview);
+   .post(protect, restrictTo('user'), setTourAndUserIds, isBooked, createReview);
 
 router
    .route('/:id')

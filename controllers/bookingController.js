@@ -3,6 +3,7 @@ const Tour = require('./../models/tourModel');
 const Booking = require('./../models/bookingModel');
 const catchAsync = require('./../utils/catchAsync');
 const handlerFactory = require('./handlerFactory');
+const AppError = require('../utils/appError');
 
 exports.getCheckoutSession = catchAsync(async (req, res, next) => {
    // 1) Get the currently booked tour
@@ -46,6 +47,21 @@ exports.createBookingCheckout = catchAsync(async (req, res, next) => {
    await Booking.create({ tour, user, price });
 
    res.redirect(req.originalUrl.split('?')[0]);
+
+   next();
+});
+
+
+exports.isBooked = catchAsync(async (req, res, next) => {
+   const user = req.user;
+
+   if (user) {
+      const booking = await Booking.find({ user: req.user.id, tour: req.body.tour });
+
+      if (booking.length === 0) {
+         return next(new AppError('You need to buy the package to review.'), 403);
+      }
+   }
 
    next();
 });
