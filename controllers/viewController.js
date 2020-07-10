@@ -147,6 +147,22 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
 });
 
 
+exports.checkBooking = catchAsync(async (req, res, next) => {
+   const user = res.locals.user;
+   const tour = await Tour.findOne({ slug: req.params.slug });
+
+   if (!user) {
+      return next();
+   }
+
+   const booking = await Booking.find({ user: user._id, tour: tour.id });
+
+   booking.length > 0 ? res.locals.booking = true : res.locals.booking = false;
+
+   next();
+});
+
+
 // exports.updateUserData = catchAsync(async (req, res, next) => {
 //    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
 //       name: req.body.name,
