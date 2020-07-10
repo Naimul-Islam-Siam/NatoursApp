@@ -19,6 +19,13 @@ exports.createOne = Model => catchAsync(async (req, res, next) => {
 
 
 exports.updateOne = Model => catchAsync(async (req, res, next) => {
+   // authorization
+   const findDoc = await Model.findById(req.params.id);
+   if (findDoc.user.id !== req.user.id) {
+      return next(new AppError(`You don't have permission to perform this action.`, 403));
+   }
+
+
    const doc = await Model.findByIdAndUpdate(req.params.id, req.body, {
       new: true,
       runValidators: true // otherwise will not accept validators defined in tourSchema
@@ -31,11 +38,6 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
       return next(error);
    }
 
-   // authorization
-   if (doc.user._id !== req.user._id) {
-      return next(new AppError(`You don't have permission to perform this action.`, 403));
-   }
-
    res.status(200).json({
       status: 'success',
       data: {
@@ -46,17 +48,19 @@ exports.updateOne = Model => catchAsync(async (req, res, next) => {
 
 
 exports.deleteOne = Model => catchAsync(async (req, res, next) => {
+   // authorization
+   const findDoc = await Model.findById(req.params.id);
+   if (findDoc.user.id !== req.user.id) {
+      return next(new AppError(`You don't have permission to perform this action.`, 403));
+   }
+
+
    const doc = await Model.findByIdAndDelete(req.params.id, req.body);
 
    // 404
    if (!doc) {
       const error = new AppError(`Couldn't find any document with that ID`, 404);
       return next(error);
-   }
-
-   // authorization
-   if (doc.user._id !== req.user._id) {
-      return next(new AppError(`You don't have permission to perform this action.`, 403));
    }
 
    // status code for delete is 204
