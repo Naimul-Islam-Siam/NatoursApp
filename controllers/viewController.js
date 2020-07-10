@@ -112,6 +112,41 @@ exports.getMyTours = catchAsync(async (req, res, next) => {
    });
 });
 
+
+exports.forgotPassword = catchAsync(async (req, res, next) => {
+   // if a logged in user is already there
+   if (res.locals.user) {
+      res.writeHead(302, {
+         'Location': '/'
+      });
+      res.end();
+
+      return next();
+   }
+
+   res.status(200).render('forgotPass', {
+      title: 'Forgot Password'
+   });
+});
+
+
+exports.resetPassword = catchAsync(async (req, res, next) => {
+   // if a logged in user is already there
+   if (res.locals.user) {
+      res.writeHead(302, {
+         'Location': '/'
+      });
+      res.end();
+
+      return next();
+   }
+
+   res.status(200).render('resetPass', {
+      title: 'Reset Password'
+   });
+});
+
+
 // exports.updateUserData = catchAsync(async (req, res, next) => {
 //    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
 //       name: req.body.name,

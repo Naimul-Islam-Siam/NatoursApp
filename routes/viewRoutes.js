@@ -3,7 +3,7 @@ const router = express.Router();
 const viewController = require('./../controllers/viewController');
 const authController = require('./../controllers/authController');
 const bookingController = require('./../controllers/bookingController');
-const { getOverview, getTour, getLoginForm, getSignupForm, getAccount, getMyTours, verifyAccount, updateUserData } = viewController;
+const { getOverview, getTour, getLoginForm, getSignupForm, getAccount, getMyTours, verifyAccount, forgotPassword, resetPassword } = viewController;
 const { isLoggedIn, protect } = authController;
 const { createBookingCheckout } = bookingController;
 
@@ -28,6 +28,11 @@ router
 router
    .get('/my-tours', protect, getMyTours);
 
+router
+   .get('/forgot-password', isLoggedIn, forgotPassword);
+
+router
+   .get('/reset-password', isLoggedIn, resetPassword);
 
 // router
 //    .post('/submit-user-data', protect, updateUserData)

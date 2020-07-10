@@ -4,6 +4,8 @@ import { deactivate } from './deactivate';
 import { signup } from './signup';
 import { updateSettings } from './updateSettings';
 import { verify } from './verify';
+import { forgotPassword } from './forgotPassword';
+import { resetPassword } from './resetPassword';
 import { bookTour } from './stripe';
 
 const loginForm = document.querySelector('#form--login');
@@ -11,9 +13,11 @@ const logoutBtn = document.querySelector('.nav__el--logout');
 const signupForm = document.querySelector('#form--signup');
 const userDataForm = document.querySelector('.form-user-data');
 const userPasswordForm = document.querySelector('.form-user-password');
+const verifyForm = document.querySelector('#form-verify');
+const forgotPassForm = document.querySelector('#form--forgot-pass');
+const resetPassForm = document.querySelector('#form--reset-pass');
 const bookBtn = document.getElementById('book-tour');
 const deactivateBtn = document.getElementById('deactivate-btn');
-const verifyForm = document.querySelector('#form-verify');
 
 if (loginForm) {
    loginForm.addEventListener('submit', async e => {
@@ -152,9 +156,51 @@ if (verifyForm) {
 
       const token = document.getElementById('token').value;
 
-      console.log(token);
-
       await verify(token);
+
+      e.submitter.style.filter = 'brightness(100%)';
+      e.submitter.disabled = false;
+      e.submitter.style.cursor = 'pointer';
+   });
+}
+
+
+if (forgotPassForm) {
+   forgotPassForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      e.submitter.style.filter = 'brightness(70%)';
+      e.submitter.disabled = true;
+      e.submitter.style.cursor = 'not-allowed';
+
+      const email = document.getElementById('email').value;
+
+      await forgotPassword(email);
+
+      e.submitter.style.filter = 'brightness(100%)';
+      e.submitter.disabled = false;
+      e.submitter.style.cursor = 'pointer';
+   });
+}
+
+
+if (resetPassForm) {
+   resetPassForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      e.submitter.style.filter = 'brightness(70%)';
+      e.submitter.disabled = true;
+      e.submitter.style.cursor = 'not-allowed';
+
+      const resetToken = document.getElementById('token-reset').value;
+      const password = document.getElementById('password-reset').value;
+      const passwordConfirm = document.getElementById('password-confirm-reset').value;
+
+      console.log(resetToken);
+      console.log(password);
+      console.log(passwordConfirm);
+
+      await resetPassword(resetToken, password, passwordConfirm);
 
       e.submitter.style.filter = 'brightness(100%)';
       e.submitter.disabled = false;
