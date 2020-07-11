@@ -1,4 +1,5 @@
 import '@babel/polyfill';
+import { displayMap } from './mapbox';
 import { login, logout } from './login';
 import { deactivate } from './deactivate';
 import { signup } from './signup';
@@ -8,6 +9,7 @@ import { forgotPassword } from './forgotPassword';
 import { resetPassword } from './resetPassword';
 import { bookTour } from './stripe';
 
+const mapbox = document.getElementById('map');
 const loginForm = document.querySelector('#form--login');
 const logoutBtn = document.querySelector('.nav__el--logout');
 const signupForm = document.querySelector('#form--signup');
@@ -18,6 +20,13 @@ const forgotPassForm = document.querySelector('#form--forgot-pass');
 const resetPassForm = document.querySelector('#form--reset-pass');
 const bookBtn = document.getElementById('book-tour');
 const deactivateBtn = document.getElementById('deactivate-btn');
+
+
+if (mapbox) {
+   const locations = JSON.parse(mapbox.dataset.locations);
+   displayMap(locations);
+}
+
 
 if (loginForm) {
    loginForm.addEventListener('submit', async e => {

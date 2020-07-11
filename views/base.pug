@@ -7,6 +7,8 @@ html(lang='en')
       link(rel="stylesheet" href="/css/style.css")
       link(rel="shortcut icon" type="image/png" href="/img/favicon.png")
       title Natours | #{title}
+      script(src='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.js')
+      link(href='https://api.mapbox.com/mapbox-gl-js/v1.11.1/mapbox-gl.css' rel='stylesheet')
 
    body
       //- HEADER
@@ -23,4 +25,5 @@ html(lang='en')
       //- script(src='https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js')
       //- script(src='/js/login.js')
       script(src='https://js.stripe.com/v3/')
+      script(src='/js/mapbox.js')
       script(src='/js/bundle.js')
