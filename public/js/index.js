@@ -21,6 +21,37 @@ const resetPassForm = document.querySelector('#form--reset-pass');
 const bookBtn = document.getElementById('book-tour');
 const deactivateBtn = document.getElementById('deactivate-btn');
 
+const openPopupBtn = document.getElementById('popup-open-btn');
+const closePopupBtn = document.getElementById('popup-close-btn');
+const popup = document.getElementById('popup');
+const popupContent = document.querySelector('.popup__content');
+
+
+const openPopup = () => {
+   popup.style.visibility = "visible";
+   popup.style.opacity = "1";
+   popupContent.style.opacity = "1";
+};
+
+const closePopup = () => {
+   popup.style.visibility = "hidden";
+   popup.style.opacity = "0";
+   popupContent.style.opacity = "0";
+};
+
+
+if (openPopupBtn) {
+   openPopupBtn.addEventListener("click", () => {
+      openPopup();
+   });
+}
+
+if (closePopupBtn) {
+   closePopupBtn.addEventListener("click", () => {
+      closePopup();
+   });
+}
+
 
 if (mapbox) {
    const locations = JSON.parse(mapbox.dataset.locations);

@@ -9284,6 +9284,34 @@ var forgotPassForm = document.querySelector('#form--forgot-pass');
 var resetPassForm = document.querySelector('#form--reset-pass');
 var bookBtn = document.getElementById('book-tour');
 var deactivateBtn = document.getElementById('deactivate-btn');
+var openPopupBtn = document.getElementById('popup-open-btn');
+var closePopupBtn = document.getElementById('popup-close-btn');
+var popup = document.getElementById('popup');
+var popupContent = document.querySelector('.popup__content');
+
+var openPopup = function openPopup() {
+  popup.style.visibility = "visible";
+  popup.style.opacity = "1";
+  popupContent.style.opacity = "1";
+};
+
+var closePopup = function closePopup() {
+  popup.style.visibility = "hidden";
+  popup.style.opacity = "0";
+  popupContent.style.opacity = "0";
+};
+
+if (openPopupBtn) {
+  openPopupBtn.addEventListener("click", function () {
+    openPopup();
+  });
+}
+
+if (closePopupBtn) {
+  closePopupBtn.addEventListener("click", function () {
+    closePopup();
+  });
+}
 
 if (mapbox) {
   var locations = JSON.parse(mapbox.dataset.locations);
@@ -9660,7 +9688,7 @@ var parent = module.bundle.parent;
 if ((!parent || !parent.isParcelRequire) && typeof WebSocket !== 'undefined') {
   var hostname = "" || location.hostname;
   var protocol = location.protocol === 'https:' ? 'wss' : 'ws';
-  var ws = new WebSocket(protocol + '://' + hostname + ':' + "2313" + '/');
+  var ws = new WebSocket(protocol + '://' + hostname + ':' + "12668" + '/');
 
   ws.onmessage = function (event) {
     checkedAssets = {};

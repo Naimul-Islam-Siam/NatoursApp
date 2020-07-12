@@ -1,0 +1,18 @@
+div.popup#popup
+   .popup__content
+      .login-form
+         h2.heading-secondary.ma-bt-lg Add Review
+         <svg xmlns="http://www.w3.org/2000/svg" id="popup-close-btn" class="icon icon-tabler icon-tabler-x" width="28" height="28" viewBox="0 0 24 24" stroke-width="2" stroke="#55c57a" fill="none" stroke-linecap="round" stroke-linejoin="round">
+            <path stroke="none" d="M0 0h24v24H0z"/>
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+         </svg>
+         form.form.form--login#form--login
+            .form__group
+            label.form__label(for='review') Review
+            textarea#review.form__input(type='textarea', placeholder='Leave your review', required)
+            .form__group.ma-bt-md
+            label.form__label(for='rating') Rating
+            input#rating.form__input(type='number', min="1" max="5" value="4.5" step="0.1" required)
+            .form__group.ma-bt-md
+            button.btn.btn--green Submit

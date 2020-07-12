@@ -12,6 +12,8 @@ mixin reviewCard(review)
                use(xlink:href='/img/icons.svg#icon-star')
 
 block content
+   include _popup
+
    section.section-header
       .header__hero
          .header__hero-overlay &nbsp;
@@ -85,9 +87,29 @@ block content
       #map(data-locations=`${JSON.stringify(tour.locations)}`)
 
    section.section-reviews
-      .reviews
-         each review in tour.reviews
-            +reviewCard(review)
+      if !booking
+         .reviews
+            each review in tour.reviews
+                  +reviewCard(review)
+
+      if booking
+         .reviews
+            .reviews__card
+               .reviews__avatar
+                  //- h6.reviews__heading Leave a Review
+               p.reviews__button
+                  <svg xmlns="http://www.w3.org/2000/svg" id="popup-open-btn" class="icon icon-tabler icon-tabler-plus" width="70" height="70" viewBox="0 0 24 24" stroke-width="1.5" stroke="#55c57a" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                     <path stroke="none" d="M0 0h24v24H0z"/>
+                     <line x1="12" y1="5" x2="12" y2="19" />
+                     <line x1="5" y1="12" x2="19" y2="12" />
+                  </svg>
+               .reviews__rating
+                  h6.reviews__heading Leave a Review
+                  //- each star in [1, 2, 3, 4, 5]
+                  //-    svg.reviews__star(class=`reviews__star--${review.rating >= star ? 'active' : 'inactive'}`)
+                  //-       use(xlink:href='/img/icons.svg#icon-star')
+            each review in tour.reviews
+               +reviewCard(review)
 
    section.section-cta
       .cta
