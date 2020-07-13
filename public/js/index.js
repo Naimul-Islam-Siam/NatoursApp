@@ -236,10 +236,6 @@ if (resetPassForm) {
       const password = document.getElementById('password-reset').value;
       const passwordConfirm = document.getElementById('password-confirm-reset').value;
 
-      console.log(resetToken);
-      console.log(password);
-      console.log(passwordConfirm);
-
       await resetPassword(resetToken, password, passwordConfirm);
 
       e.submitter.style.filter = 'brightness(100%)';

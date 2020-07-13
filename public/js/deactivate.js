@@ -6,7 +6,7 @@ export const deactivate = async () => {
    try {
       const result = await axios({
          method: 'DELETE',
-         url: 'http://127.0.0.1:8080/api/v1/users/deactivateMe'
+         url: '/api/v1/users/deactivateMe'
       });
 
       showAlert('success', 'Account is Deactivated');
