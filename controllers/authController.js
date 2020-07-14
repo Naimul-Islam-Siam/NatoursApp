@@ -13,7 +13,7 @@ const signToken = (id) => {
    });
 };
 
-const createAndSendToken = (user, statusCode, res) => {
+const createAndSendToken = (user, statusCode, req, res) => {
    const token = signToken(user._id); // _id comes from mongoose
 
    const cookieOptions = {
@@ -21,7 +21,7 @@ const createAndSendToken = (user, statusCode, res) => {
       httpOnly: true
    }
 
-   if (process.env.NODE_ENV === 'production') {
+   if (req.secure || req.headers['x-forwarded-proto'] === 'https') {
       cookieOptions.secure = true; // production must be in https protocol
    }
 
@@ -102,7 +102,7 @@ exports.accountConfirm = catchAsync(async (req, res, next) => {
 
    await user.save({ validateBeforeSave: false });
 
-   createAndSendToken(user, 200, res);
+   createAndSendToken(user, 200, req, res);
 });
 
 
@@ -157,7 +157,7 @@ exports.login = catchAsync(async (req, res, next) => {
 
 
    // (3) if everything is ok send token to client and provide access to client
-   createAndSendToken(user, 200, res);
+   createAndSendToken(user, 200, req, res);
 });
 
 
@@ -309,7 +309,7 @@ exports.resetPassword = catchAsync(async (req, res, next) => {
    // 4) log the user in and send JWT
    // ===============================
 
-   createAndSendToken(user, 200, res);
+   createAndSendToken(user, 200, req, res);
 });
 
 
@@ -329,7 +329,7 @@ exports.updatePassword = catchAsync(async (req, res, next) => {
    await user.save(); // findByIdAndUpdate won't work, so we must do it this way
 
    // 4) login and send JWT
-   createAndSendToken(user, 200, res);
+   createAndSendToken(user, 200, req, res);
 });
 
 
