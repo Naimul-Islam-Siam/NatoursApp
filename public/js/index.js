@@ -8,6 +8,7 @@ import { verify } from './verify';
 import { forgotPassword } from './forgotPassword';
 import { resetPassword } from './resetPassword';
 import { bookTour } from './stripe';
+import { addReview } from './review';
 
 const mapbox = document.getElementById('map');
 const loginForm = document.querySelector('#form--login');
@@ -25,6 +26,7 @@ const openPopupBtn = document.getElementById('popup-open-btn');
 const closePopupBtn = document.getElementById('popup-close-btn');
 const popup = document.getElementById('popup');
 const popupContent = document.querySelector('.popup__content');
+const reviewForm = document.getElementById('form--review');
 
 
 const openPopup = () => {
@@ -237,6 +239,27 @@ if (resetPassForm) {
       const passwordConfirm = document.getElementById('password-confirm-reset').value;
 
       await resetPassword(resetToken, password, passwordConfirm);
+
+      e.submitter.style.filter = 'brightness(100%)';
+      e.submitter.disabled = false;
+      e.submitter.style.cursor = 'pointer';
+   });
+}
+
+
+if (reviewForm) {
+   reviewForm.addEventListener('submit', async e => {
+      e.preventDefault();
+
+      e.submitter.style.filter = 'brightness(70%)';
+      e.submitter.disabled = true;
+      e.submitter.style.cursor = 'not-allowed';
+
+      const tourId = document.getElementById('tour-hidden').value;
+      const reviewText = document.getElementById('review-text').value;
+      const rating = document.getElementById('rating').value;
+
+      await addReview(tourId, reviewText, rating);
 
       e.submitter.style.filter = 'brightness(100%)';
       e.submitter.disabled = false;
