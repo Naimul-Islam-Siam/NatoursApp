@@ -8,6 +8,7 @@ const xss = require('xss-clean');
 const hpp = require('hpp');
 const cookieParser = require('cookie-parser');
 const compression = require('compression');
+const cors = require('cors');
 
 const app = express();
 
@@ -37,6 +38,11 @@ app.set('views', path.join(__dirname, 'views'));
 
 // set security HTTP headers
 app.use(helmet());
+
+// cors implement
+app.use(cors()); // this way only works for simple requests(get, post req)
+
+app.options('*', cors()); // implement cors for complex requests on every route
 
 // limit number of requests
 const limiter = rateLimit({
