@@ -51,3 +51,13 @@ process.on('unhandledRejection', err => {
       process.exit(1); // 1 stands for uncalled exception; will shut the app down
    });
 });
+
+
+// heroku sends SIGTERM signal every 24h which causes abrupt shut down 
+// to shut down gracefully, we use server.close()
+process.on('SIGTERM', () => {
+   console.log('👋 SIGTERM Received. Shutting down gracefully.');
+   server.close(() => {
+      console.log('💥 Process Terminated!');
+   });
+});
