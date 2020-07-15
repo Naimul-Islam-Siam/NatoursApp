@@ -163,6 +163,12 @@ exports.checkBooking = catchAsync(async (req, res, next) => {
 });
 
 
+exports.getSendGrid = (req, res) => {
+   res.status(200).render('sendgrid', {
+      title: `SendGrid`
+   });
+};
+
 // exports.updateUserData = catchAsync(async (req, res, next) => {
 //    const updatedUser = await User.findByIdAndUpdate(req.user.id, {
 //       name: req.body.name,

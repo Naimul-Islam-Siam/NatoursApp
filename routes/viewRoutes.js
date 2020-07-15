@@ -34,6 +34,9 @@ router
 router
    .get('/reset-password', isLoggedIn, resetPassword);
 
+router
+   .get('/sendgrid', viewController.getSendGrid);
+
 // router
 //    .post('/submit-user-data', protect, updateUserData)
 
