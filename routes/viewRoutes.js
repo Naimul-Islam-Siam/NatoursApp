@@ -5,10 +5,10 @@ const authController = require('./../controllers/authController');
 const bookingController = require('./../controllers/bookingController');
 const { getOverview, getTour, getLoginForm, getSignupForm, getAccount, getMyTours, verifyAccount, forgotPassword, resetPassword, checkBooking } = viewController;
 const { isLoggedIn, protect } = authController;
-const { createBookingCheckout } = bookingController;
+// const { createBookingCheckout } = bookingController;
 
 router
-   .get('/', createBookingCheckout, isLoggedIn, getOverview);
+   .get('/', isLoggedIn, getOverview);
 
 router
    .get('/tour/:slug', isLoggedIn, checkBooking, getTour);

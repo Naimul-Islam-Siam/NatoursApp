@@ -15,6 +15,7 @@ const app = express();
 const AppError = require('./utils/appError');
 const globalErrorHandler = require('./controllers/errorController');
 
+const bookingController = require('./controllers/bookingController');
 const tourRouter = require('./routes/tourRoutes');
 const userRouter = require('./routes/userRoutes');
 const reviewRouter = require('./routes/reviewRoutes');
@@ -51,6 +52,14 @@ const limiter = rateLimit({
    message: 'Too many requests from this IP. Try again in an hour'
 });
 app.use('/api', limiter);
+
+
+// stripe webhooks
+app.post(
+   '/webhook-checkout',
+   express.raw({ type: 'application/json' }),
+   bookingController.webhookCheckout
+);
 
 
 // body parser, reading data from body into req.body
