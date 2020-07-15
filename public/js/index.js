@@ -9,6 +9,7 @@ import { forgotPassword } from './forgotPassword';
 import { resetPassword } from './resetPassword';
 import { bookTour } from './stripe';
 import { addReview } from './review';
+import { showAlert } from './alerts';
 
 const mapbox = document.getElementById('map');
 const loginForm = document.querySelector('#form--login');
@@ -266,3 +267,9 @@ if (reviewForm) {
       e.submitter.style.cursor = 'pointer';
    });
 }
+
+const alertMessage = document.querySelector('body').dataset.alert;
+
+if (alertMessage) {
+   showAlert('success', alertMessage, 10);
+} 
