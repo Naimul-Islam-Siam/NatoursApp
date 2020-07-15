@@ -157,7 +157,7 @@ exports.checkBooking = catchAsync(async (req, res, next) => {
 
    const booking = await Booking.find({ user: user._id, tour: tour.id });
 
-   booking.length > 0 ? res.locals.booking = true : res.locals.booking = false;
+   booking.length < 1 ? res.locals.booking = false : res.locals.booking = true;
 
    next();
 });
